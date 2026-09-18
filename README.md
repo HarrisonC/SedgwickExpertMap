@@ -1,29 +1,54 @@
 # Sedgwick Marine Expert Map
 
-A local React/TypeScript interface for exploring marine expertise using Mapbox GL JS. All 30 included profiles are fictional and marked as sample data in the interface. No authentication, database, or deployment is configured.
+A standard static website built with HTML, CSS and JavaScript. No React, TypeScript, framework, database, build step, or package installation is needed. Mapbox GL JS is loaded from Mapbox's CDN. All included expert profiles are fictional sample data.
 
-## Run locally
+## Files to upload to your web host
 
-Requires Node.js 22.13+ and npm.
-
-```sh
-npm ci
-cp .env.example .env.local
-# Set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local to your public Mapbox token.
-npm run dev
+```text
+index.html                 Main page: header, filters, expert panel and map
+config.js                  Your public Mapbox token
+css/
+  styles.css               Colours, typography and responsive layouts
+js/
+  app.js                   Loads profiles, renders the list and controls Mapbox
+  experts.js               Profile validation, filters and geographic helpers
+images/
+  sedgwick-logo.png         Current official Sedgwick wordmark
+  favicon.svg              Browser tab icon
+data/
+  experts/
+    index.json             List of the individual profile filenames
+    alex-morgan.json        One JSON file per expert
+    ...
 ```
 
-Open the local address printed by the server. The public token is intended for browser use; `.env.local` is ignored by Git. Never use a secret Mapbox token. The current checkout already has the supplied public token configured locally.
+Upload these files and folders together, keeping their relative positions. They work at a domain root or in a subfolder. Your host must serve `.js` files as JavaScript and `.json` files as JSON. Do not upload development files such as `.git`, `node_modules`, or local configuration.
+
+1. Edit `config.js` and set `mapboxToken` to your Mapbox **public** token (starts with `pk.`).
+2. Upload the files listed above to the website's public directory.
+3. Open the hosted `index.html` URL. Nothing needs to run on the server other than ordinary static file hosting.
+
+The token is visible in the browser by design; never use a secret token. Restrict the public token to your website URLs in your Mapbox account when appropriate. Internet access to Mapbox is required. The list and filters remain usable if the map fails.
+
+## Local preview
+
+Serve the directory over HTTP rather than double-clicking `index.html`: browsers restrict loading JSON and JavaScript modules from `file://` URLs.
+
+If Node.js 22+ is installed:
 
 ```sh
-npm test
-npm run typecheck
-npm run build
+node scripts/serve.mjs
 ```
 
-## Add or edit experts
+Open http://localhost:5173/. No `npm install` is required. Alternatively use your editor's static preview server. The supplied token is retained in ignored `config.local.json` for this checkout; for external hosting, set `config.js` as described above.
 
-Add one `.json` file per person inside `data/experts/`. Files are discovered automatically; no import list needs updating. For example:
+## Add, edit or remove an expert
+
+Edit a file in `data/experts/` and upload it to update a profile. **No rebuild is required.** Reload the page to see changes (your hosting provider may also cache uploaded files).
+
+To add an expert, copy an existing profile, use a unique lowercase hyphenated `id`, and add its filename to `data/experts/index.json`. To remove one, remove its filename from the index and delete the profile. Browsers cannot discover files in a server folder automatically, which is why the index is needed.
+
+Example profile:
 
 ```json
 {
@@ -40,14 +65,22 @@ Add one `.json` file per person inside `data/experts/`. Files are discovered aut
 }
 ```
 
-Use a unique lowercase, hyphenated ID and preferably the same filename. `email` and `phone` are optional; omit them when unavailable. Latitude is -90 to 90; longitude is -180 to 180. `expertise` must contain at least one label. Region describes location, not coverage. Consistent labels prevent duplicate filter options.
+`email` and `phone` are optional. Expertise and region dropdowns are populated from profiles; use consistent labels. Region describes location, not service coverage. Replace the sample-data notice in `index.html` when switching entirely to verified profiles.
 
-Edit a profile to update it, or delete its file to remove it. Run `npm run validate:experts` to check profiles; errors identify the file and field. Validation also runs before development and production builds. Rebuild after changes for production; development imports update automatically (restart the server if a new file is not picked up).
+Optional helper commands (Node.js only; no dependencies):
 
-The dropdown options are derived from profile data. Filters use AND logic; reset returns to the world view. The list uses geographical bounds rather than rendered map markers, so all experts inside a cluster are included. Cluster clicks zoom in. Experts sharing the exact same coordinates remain accessible individually in the list; at maximum zoom, repeated clicks on their overlapping point cycle through the profiles.
+```sh
+node scripts/update-experts.mjs     # Validate profiles and regenerate index.json
+node scripts/validate-experts.mjs   # Validate profile fields
+node --test tests/*.test.mjs        # Run automated checks
+```
 
-When replacing all samples with verified records, update the sample-data notice in `components/expert-directory.tsx`.
+`scripts/`, `tests/`, `package.json`, `.gitignore`, and this README are development/maintenance files. **They do not need to be uploaded.** `package.json` only offers convenient `npm run dev`, `npm test`, and `npm run update:experts` aliases; the website does not use npm.
 
-## Brand asset
+## Behaviour
 
-The current Sedgwick wordmark with green corner symbol is downloaded unchanged from the [official Sedgwick website](https://www.sedgwick.com/wp-content/uploads/2026/01/sedgwick-logo-light.png). The white logo panel preserves the original dark wordmark. The map palette and navy header follow the supplied design direction.
+Filters combine with AND logic and fit the map to the matching experts. Reset restores the world view. The list shows individual experts within the viewport, including those inside numbered clusters. Click a cluster to zoom in, or select a list entry to highlight its location. Clicking overlapping individual markers cycles through co-located experts.
+
+## Logo
+
+The current Sedgwick logo is used unchanged from the [official Sedgwick website](https://www.sedgwick.com/wp-content/uploads/2026/01/sedgwick-logo-light.png).

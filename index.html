@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sedgwick | Marine expert network</title>
+  <meta name="description" content="Explore marine expertise around the world. Filter specialists by expertise and region.">
+  <link rel="icon" href="images/favicon.svg">
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.31.0/mapbox-gl.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v3.31.0/mapbox-gl.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+<main class="directory">
+  <header class="brand-header">
+    <div class="logo-panel"><img class="brand-logo" src="images/sedgwick-logo.png" alt="Sedgwick" width="180" height="39"></div>
+    <div class="header-title"><span>Global specialty</span><h1>Marine expert network</h1></div>
+    <div class="header-world">Worldwide expertise</div>
+  </header>
+  <section class="filter-bar" aria-label="Filter experts">
+    <div class="filter-intro">Find an expert</div>
+    <div class="filter-field"><label for="expertise">Expertise</label><select id="expertise" class="filter-select" disabled><option value="all">All expertise</option></select></div>
+    <div class="filter-field"><label for="region">Region</label><select id="region" class="filter-select" disabled><option value="all">All regions</option></select></div>
+    <button class="reset-button" id="reset" type="button">↻ Reset filters</button>
+  </section>
+  <div class="workspace">
+    <aside class="expert-panel" aria-label="Experts in current view">
+      <div class="list-heading"><div><h2>Experts <span class="count" id="count" aria-live="polite">0</span></h2><p id="list-description">Loading expert profiles…</p></div></div>
+      <div class="expert-list" id="expert-list"></div>
+      <div class="sample-notice"><span aria-hidden="true"></span>Fictional profiles · Sample data</div>
+    </aside>
+    <section class="map-panel" aria-label="World map of marine experts">
+      <div id="map" class="map-canvas"></div>
+      <div id="map-caption" class="map-caption">Loading world map…</div>
+      <div id="map-status" class="map-status" role="status" hidden><h2>Map unavailable</h2><p id="map-message"></p></div>
+    </section>
+  </div>
+</main>
+<noscript>This directory needs JavaScript enabled to load expert profiles and the interactive map.</noscript>
+</body>
+</html>
