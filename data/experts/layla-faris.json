@@ -1,0 +1,15 @@
+{
+  "id": "layla-faris",
+  "name": "Layla Faris",
+  "role": "Marine engineer",
+  "expertise": [
+    "Marine engineering",
+    "Offshore & energy"
+  ],
+  "region": "Middle East",
+  "city": "Dubai",
+  "country": "United Arab Emirates",
+  "latitude": 25.2048,
+  "longitude": 55.2708,
+  "email": "layla.faris@example.com"
+}

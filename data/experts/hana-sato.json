@@ -1,0 +1,14 @@
+{
+  "id": "hana-sato",
+  "name": "Hana Sato",
+  "role": "Marine cargo surveyor",
+  "expertise": [
+    "Cargo"
+  ],
+  "region": "Asia",
+  "city": "Tokyo",
+  "country": "Japan",
+  "latitude": 35.6762,
+  "longitude": 139.6503,
+  "email": "hana.sato@example.com"
+}

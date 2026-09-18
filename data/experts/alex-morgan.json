@@ -1,0 +1,15 @@
+{
+  "id": "alex-morgan",
+  "name": "Alex Morgan",
+  "role": "Marine cargo surveyor",
+  "expertise": [
+    "Cargo",
+    "Marine engineering"
+  ],
+  "region": "Europe",
+  "city": "London",
+  "country": "United Kingdom",
+  "latitude": 51.5074,
+  "longitude": -0.1278,
+  "email": "alex.morgan@example.com"
+}

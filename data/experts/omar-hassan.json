@@ -1,0 +1,14 @@
+{
+  "id": "omar-hassan",
+  "name": "Omar Hassan",
+  "role": "Hull & machinery specialist",
+  "expertise": [
+    "Hull & machinery"
+  ],
+  "region": "Africa",
+  "city": "Alexandria",
+  "country": "Egypt",
+  "latitude": 31.2001,
+  "longitude": 29.9187,
+  "email": "omar.hassan@example.com"
+}

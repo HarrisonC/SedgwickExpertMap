@@ -1,0 +1,14 @@
+{
+  "id": "lukas-weber",
+  "name": "Lukas Weber",
+  "role": "Offshore energy surveyor",
+  "expertise": [
+    "Offshore & energy"
+  ],
+  "region": "Europe",
+  "city": "Hamburg",
+  "country": "Germany",
+  "latitude": 53.5511,
+  "longitude": 9.9937,
+  "email": "lukas.weber@example.com"
+}
