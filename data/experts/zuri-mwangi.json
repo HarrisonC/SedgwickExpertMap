@@ -1,0 +1,14 @@
+{
+  "id": "zuri-mwangi",
+  "name": "Zuri Mwangi",
+  "role": "Marine cargo surveyor",
+  "expertise": [
+    "Cargo"
+  ],
+  "region": "Africa",
+  "city": "Mombasa",
+  "country": "Kenya",
+  "latitude": -4.0435,
+  "longitude": 39.6682,
+  "email": "zuri.mwangi@example.com"
+}

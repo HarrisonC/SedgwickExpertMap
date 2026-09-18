@@ -1,0 +1,14 @@
+{
+  "id": "chloe-martin",
+  "name": "Chloe Martin",
+  "role": "Yacht surveyor",
+  "expertise": [
+    "Yacht & pleasure craft"
+  ],
+  "region": "North America",
+  "city": "Vancouver",
+  "country": "Canada",
+  "latitude": 49.2827,
+  "longitude": -123.1207,
+  "email": "chloe.martin@example.com"
+}

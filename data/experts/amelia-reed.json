@@ -1,0 +1,14 @@
+{
+  "id": "amelia-reed",
+  "name": "Amelia Reed",
+  "role": "Hull & machinery specialist",
+  "expertise": [
+    "Hull & machinery"
+  ],
+  "region": "Europe",
+  "city": "London",
+  "country": "United Kingdom",
+  "latitude": 51.5074,
+  "longitude": -0.1278,
+  "email": "amelia.reed@example.com"
+}

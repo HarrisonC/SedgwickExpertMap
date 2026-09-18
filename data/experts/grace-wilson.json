@@ -1,0 +1,14 @@
+{
+  "id": "grace-wilson",
+  "name": "Grace Wilson",
+  "role": "Marine liability specialist",
+  "expertise": [
+    "Marine liability"
+  ],
+  "region": "North America",
+  "city": "Houston",
+  "country": "United States",
+  "latitude": 29.7604,
+  "longitude": -95.3698,
+  "email": "grace.wilson@example.com"
+}
