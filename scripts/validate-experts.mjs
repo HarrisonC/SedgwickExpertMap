@@ -1,8 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { validateProfiles } from '../lib/experts.ts';
+import { validateProfiles } from '../js/experts.js';
 export function loadProfiles(directory) {
-  const entries = Object.fromEntries(readdirSync(directory).filter(f => f.endsWith('.json')).sort().map(file => {
+  const entries = Object.fromEntries(readdirSync(directory).filter(f => f.endsWith('.json') && f !== 'index.json').sort().map(file => {
     const filename = resolve(directory, file);
     try { return [filename, JSON.parse(readFileSync(filename, 'utf8'))]; }
     catch (error) { throw new Error(`${filename}: invalid JSON (${error.message})`); }

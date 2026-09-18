@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateProfiles, filterExperts, inBounds, fitExtent } from '../lib/experts.ts';
+import { validateProfiles, filterExperts, inBounds, fitExtent } from '../js/experts.js';
 import { loadProfiles } from '../scripts/validate-experts.mjs';
 const expert = { id: 'alex', name: 'Alex', role: 'Surveyor', expertise: ['Cargo'], region: 'Europe', city: 'London', country: 'UK', latitude: 51.5, longitude: -.12 };
 test('profiles added as files are discovered, sorted, and removed without a registry', () => {
@@ -49,4 +49,12 @@ test('sample dataset validates and includes 30 fictional profiles', () => {
   const profiles = loadProfiles('data/experts');
   assert.equal(profiles.length, 30);
   assert.ok(profiles.every(p => p.email.endsWith('@example.com') && !p.phone));
+});
+
+test('static profile index lists every profile exactly once', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const listed = JSON.parse(readFileSync('data/experts/index.json', 'utf8'));
+  const actual = readdirSync('data/experts').filter(f => f.endsWith('.json') && f !== 'index.json').sort();
+  assert.deepEqual([...listed].sort(), actual);
+  assert.equal(new Set(listed).size, listed.length);
 });
