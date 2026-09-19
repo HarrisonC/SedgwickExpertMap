@@ -11,10 +11,12 @@ css/
   styles.css               Colours, typography and responsive layouts
 js/
   app.js                   Loads profiles, renders the list and controls Mapbox
+  profile-card.js          Builds the selected expert's map card
   experts.js               Profile validation, filters and geographic helpers
 images/
   sedgwick-logo.png         Current official Sedgwick wordmark
   favicon.svg              Browser tab icon
+  profiles/                Locally stored expert portraits
 data/
   experts/
     index.json             List of the individual profile filenames
@@ -67,6 +69,8 @@ Example profile:
 
 `email` and `phone` are optional. Expertise and region dropdowns are populated from profiles; use consistent labels. Region describes location, not service coverage.
 
+For a portrait, retain the original HTTP(S) `imageUrl` in the profile and run `npm run download:photos` (or `node scripts/download-profile-images.mjs`). This downloads missing photos into `images/profiles/<id>.jpg`, `.png` or `.webp` and adds an `imagePath` to each successful profile. Upload both the updated JSON and image folder. The command reuses valid existing images, checks downloaded image types, and reports failures with a nonzero exit code. To replace a photo, remove its existing local image first and run the command again. Cards use local images only and show initials when an image is missing or broken.
+
 Optional helper commands (Node.js only; no dependencies):
 
 ```sh
@@ -81,14 +85,16 @@ node --test tests/*.test.mjs        # Run automated checks
 
 Filters combine with AND logic and fit the map to the matching experts. Reset restores the world view. The list shows individual experts within the viewport, including those inside numbered clusters. Click a cluster to zoom in, or select a list entry to highlight its location. Clicking overlapping individual markers cycles through co-located experts.
 
+Selecting an expert from the list or an individual marker opens a card beside their map location, with a portrait, name, title, expertise, location and available contact links. Only one card opens at a time. Close it with its close button or Escape; changing or resetting filters also closes it. On mobile, list selection scrolls to the map. Existing sidebar details remain available if the map cannot load.
+
 ## Logo
 
 The current Sedgwick logo is used unchanged from the [official Sedgwick website](https://www.sedgwick.com/wp-content/uploads/2026/01/sedgwick-logo-light.png).
 
 ## Profile schema and export
 
-Profiles keep only `id`, `name`, `role`, `expertise`, `region`, `city`, `country`, `latitude`, `longitude`, and the available `phone`, `email`, `imageUrl` and `sourceUrl` fields. Missing optional details are omitted. URLs are plain strings.
+Profiles keep `id`, `name`, `role`, `expertise`, `region`, `city`, `country`, `latitude`, `longitude`, and the available `phone`, `email`, `imageUrl`, `imagePath` and `sourceUrl` fields. Missing optional details are omitted. URLs are plain strings. `imagePath` is an optional relative path restricted to `images/profiles/<id>.jpg`, `.png` or `.webp`.
 
 The published coordinates are country-level locations, even where a city has been supplied separately. Existing curated profile values are preserved. The fictional example is stored in `examples/fictional-experts/`, outside the active dataset.
 
-`exports/sedgwick-marine-experts.zip` contains all 34 profiles and `data/experts/index.json`, ready to replace the hosted expert data folder.
+`exports/sedgwick-marine-experts.zip` is the original data-only export. For profiles with local portraits, upload the current `data/experts/` and `images/profiles/` folders together.
