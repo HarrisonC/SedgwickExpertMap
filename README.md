@@ -1,6 +1,6 @@
 # Sedgwick Marine Expert Map
 
-A standard static website built with HTML, CSS and JavaScript. No React, TypeScript, framework, database, build step, or package installation is needed. Mapbox GL JS is loaded from Mapbox's CDN. All included expert profiles are fictional sample data.
+A standard static website built with HTML, CSS and JavaScript. No React, TypeScript, framework, database, build step, or package installation is needed. Mapbox GL JS is loaded from Mapbox's CDN. The active dataset contains 34 public Sedgwick expert profiles.
 
 ## Files to upload to your web host
 
@@ -18,7 +18,7 @@ images/
 data/
   experts/
     index.json             List of the individual profile filenames
-    alex-morgan.json        One JSON file per expert
+    adam-jackson.json       One JSON file per expert
     ...
 ```
 
@@ -65,7 +65,7 @@ Example profile:
 }
 ```
 
-`email` and `phone` are optional. Expertise and region dropdowns are populated from profiles; use consistent labels. Region describes location, not service coverage. Replace the sample-data notice in `index.html` when switching entirely to verified profiles.
+`email` and `phone` are optional. Expertise and region dropdowns are populated from profiles; use consistent labels. Region describes location, not service coverage.
 
 Optional helper commands (Node.js only; no dependencies):
 
@@ -84,3 +84,11 @@ Filters combine with AND logic and fit the map to the matching experts. Reset re
 ## Logo
 
 The current Sedgwick logo is used unchanged from the [official Sedgwick website](https://www.sedgwick.com/wp-content/uploads/2026/01/sedgwick-logo-light.png).
+
+## Profile schema and export
+
+Profiles keep only `id`, `name`, `role`, `expertise`, `region`, `city`, `country`, `latitude`, `longitude`, and the available `phone`, `email`, `imageUrl` and `sourceUrl` fields. Missing optional details are omitted. URLs are plain strings.
+
+The published coordinates are country-level locations, even where a city has been supplied separately. Existing curated profile values are preserved. The fictional example is stored in `examples/fictional-experts/`, outside the active dataset.
+
+`exports/sedgwick-marine-experts.zip` contains all 34 profiles and `data/experts/index.json`, ready to replace the hosted expert data folder.

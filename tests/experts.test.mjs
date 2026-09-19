@@ -45,10 +45,10 @@ test('longitude wrap, whole world, and antimeridian are handled', () => {
   assert.equal(extent[1][0] - extent[0][0], 2);
   assert.equal(fitExtent([]), null);
 });
-test('sample dataset validates and includes 30 fictional profiles', () => {
+test('imported dataset validates and includes 34 sourced profiles', () => {
   const profiles = loadProfiles('data/experts');
-  assert.equal(profiles.length, 30);
-  assert.ok(profiles.every(p => p.email.endsWith('@example.com') && !p.phone));
+  assert.equal(profiles.length, 34);
+  assert.ok(profiles.every(p => p.sourceUrl.startsWith('https://www.sedgwick.com/experts/')));
 });
 
 test('static profile index lists every profile exactly once', async () => {
