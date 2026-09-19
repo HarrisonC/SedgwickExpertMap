@@ -1,8 +1,10 @@
 import { config } from '../config.js';
 import { validateProfiles, filterExperts, inBounds, fitExtent } from './experts.js';
+import { createProfileCard } from './profile-card.js';
 
 const $ = id => document.getElementById(id);
 let experts = [], filtered = [], visible = [], selected = null, map, ready = false, available = false;
+let profilePopup = null;
 const world = () => $('expertise').value === 'all' && $('region').value === 'all';
 const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600;
 const geojson = profiles => ({type:'FeatureCollection', features:profiles.map(p => ({type:'Feature',properties:{id:p.id},geometry:{type:'Point',coordinates:[p.longitude,p.latitude]}}))});
@@ -56,21 +58,54 @@ function updateSelection() {
 }
 function selectExpert(id, fromMap=false) {
   selected=id;updateSelection(); const p=filtered.find(p=>p.id===id);
-  if(ready && available && p) map.easeTo({center:[p.longitude,p.latitude],duration});
+  if(ready && available && p) {
+    closeProfile();
+    const popup = new mapboxgl.Popup({className:'expert-popup',maxWidth:'360px',offset:18,closeOnClick:false,focusAfterOpen:false})
+      .setLngLat([p.longitude,p.latitude]).setDOMContent(createProfileCard(p)).addTo(map);
+    profilePopup=popup;
+    sizeProfile();
+    popup.on('close',()=>{if(profilePopup===popup)profilePopup=null;});
+    const close = popup.getElement().querySelector('.mapboxgl-popup-close-button');
+    close.setAttribute('aria-label',`Close ${p.name}'s profile`);
+    close.addEventListener('click',()=>focusSelected());
+    map.easeTo({center:[p.longitude,p.latitude],offset:profileOffset(),duration});
+    if(!fromMap && innerWidth<700) $('map').scrollIntoView({block:'start',behavior:duration?'smooth':'instant'});
+    close.focus({preventScroll:true});
+  }
   if(fromMap) document.getElementById(`expert-${id}`)?.scrollIntoView({block:'nearest',behavior:duration?'smooth':'instant'});
 }
+function focusSelected() {
+  document.getElementById(`expert-${selected}`)?.querySelector('button')?.focus({preventScroll:true});
+}
+function closeProfile() {
+  profilePopup?.remove();profilePopup=null;
+}
+function profileOffset() {
+  return [0, -$('map').clientHeight/4];
+}
+function sizeProfile() {
+  if(!profilePopup)return;
+  const container=$('map');
+  profilePopup.setMaxWidth(`${Math.min(360,container.clientWidth-32)}px`);
+  profilePopup.getElement().style.setProperty('--profile-max-height',`${Math.max(100,container.clientHeight*.75-76)}px`);
+}
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape' && profilePopup) {closeProfile();focusSelected();}
+});
 function fitMap(animate=true) {
   if(!ready || !available) return;
   const extent=world() ? [[-180,-58],[180,78]] : fitExtent(filtered);
   if(extent) map.fitBounds(extent,{padding:innerWidth<700?24:48,maxZoom:9,duration:animate?duration:0});
 }
 function applyFilters() {
+  closeProfile();
   selected=null; filtered=filterExperts(experts,$('expertise').value,$('region').value);
   if(ready) map.getSource('experts').setData(geojson(filtered));
   renderList();fitMap();
 }
 function resetFilters() { $('expertise').value='all';$('region').value='all';applyFilters(); }
 function unavailable(message) {
+  closeProfile();
   available=false;$('map-caption').hidden=true;$('map-status').hidden=false;
   $('map-message').textContent=message;renderList();
 }
@@ -140,7 +175,13 @@ function initializeMap(token) {
     }
     ready=true;available=true;$('map-status').hidden=true;$('map-caption').hidden=true;fitMap(false);renderList();
   });
-  new ResizeObserver(()=>{map.resize();fitMap(false);if(ready)renderList();}).observe($('map'));
+  new ResizeObserver(()=>{
+    map.resize();sizeProfile();
+    const p=profilePopup && filtered.find(p=>p.id===selected);
+    if(p) map.easeTo({center:[p.longitude,p.latitude],offset:profileOffset(),duration:0});
+    else fitMap(false);
+    if(ready)renderList();
+  }).observe($('map'));
 }
 // Start after the deferred Mapbox script has either loaded or failed.
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

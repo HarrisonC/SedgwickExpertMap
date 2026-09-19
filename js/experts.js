@@ -16,6 +16,7 @@ export function validateProfiles(entries) {
     }
     if (p.email !== undefined && (typeof p.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email))) fail("email must be a valid email address");
     if (p.phone !== undefined && (typeof p.phone !== "string" || !/^\+?[\d\s().-]+$/.test(p.phone) || !/\d/.test(p.phone))) fail("phone must be a telephone number");
+    if (p.imagePath !== undefined && (typeof p.imagePath !== 'string' || !new RegExp(`^images/profiles/${p.id}\\.(?:jpg|png|webp)$`).test(p.imagePath))) fail('imagePath must be a local images/profiles/<id>.jpg, .png or .webp path');
     return p;
   }).sort((a, b) => a.name.localeCompare(b.name, "en"));
 }
