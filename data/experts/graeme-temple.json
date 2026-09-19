@@ -1,0 +1,23 @@
+{
+  "id": "graeme-temple",
+  "name": "Graeme Temple",
+  "role": "Head of Marine Technical Services, Asia Marine Engineering Consultant",
+  "expertise": [
+    "Marine",
+    "Technical services"
+  ],
+  "region": "Asia",
+  "city": "Not published",
+  "country": "Singapore",
+  "latitude": 1.352083,
+  "longitude": 103.819836,
+  "phone": "+65 9624 9641",
+  "email": "Graeme.Temple@sedgwick.com",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2025/09/Graeme-Temple-Singapore.jpg",
+  "sourceUrl": "https://www.sedgwick.com/experts/graeme-temple/",
+  "sourceExpertId": 34783,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}

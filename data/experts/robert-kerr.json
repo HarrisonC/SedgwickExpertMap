@@ -1,0 +1,22 @@
+{
+  "id": "robert-kerr",
+  "name": "Robert Kerr",
+  "role": "Principal Surveyor",
+  "expertise": [
+    "Marine",
+    "Technical services"
+  ],
+  "region": "Asia",
+  "city": "Not published",
+  "country": "China",
+  "latitude": 35.86166,
+  "longitude": 104.195397,
+  "phone": "+86 183 2129 5922",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Robert-Kerr-China.jpg",
+  "sourceUrl": "https://www.sedgwick.com/experts/robert-kerr/",
+  "sourceExpertId": 37167,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "fabio-borda",
+  "name": "Fábio Borda",
+  "role": "Director, Marine Technical Services",
+  "expertise": [
+    "Marine",
+    "Technical services"
+  ],
+  "region": "Latin America",
+  "city": "Not published",
+  "country": "Brazil",
+  "latitude": -14.235004,
+  "longitude": -51.92528,
+  "phone": "+ 55 (11) 92211-8907",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/02/Fabio-Borda-USA-e1770630936580.png",
+  "sourceUrl": "https://www.sedgwick.com/experts/fabio-borda/",
+  "sourceExpertId": 38676,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}

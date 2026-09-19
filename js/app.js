@@ -138,7 +138,7 @@ function initializeMap(token) {
     for(const layer of ['clusters','points']) {
       map.on('mouseenter',layer,()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave',layer,()=>map.getCanvas().style.cursor='');
     }
-    ready=true;available=true;$('map-status').hidden=true;$('map-caption').hidden=false;$('map-caption').textContent='Explore the marine network';fitMap(false);renderList();
+    ready=true;available=true;$('map-status').hidden=true;$('map-caption').hidden=true;fitMap(false);renderList();
   });
   new ResizeObserver(()=>{map.resize();fitMap(false);if(ready)renderList();}).observe($('map'));
 }

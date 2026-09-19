@@ -1,0 +1,22 @@
+{
+  "id": "nicole-skiadas",
+  "name": "Nicole Skiadas",
+  "role": "Associate Director - Yachts",
+  "expertise": [
+    "Marine",
+    "Yachts"
+  ],
+  "region": "Europe",
+  "city": "Not published",
+  "country": "Greece",
+  "latitude": 39.074208,
+  "longitude": 21.824312,
+  "phone": "+44 7345 428223",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Nicole-Skiadas-Greece-300x300-1.jpg",
+  "sourceUrl": "https://www.sedgwick.com/experts/nicole-skiadas/",
+  "sourceExpertId": 37143,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}

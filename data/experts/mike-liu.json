@@ -1,0 +1,23 @@
+{
+  "id": "mike-liu",
+  "name": "Mike Liu",
+  "role": "Senior Chemist",
+  "expertise": [
+    "Marine",
+    "Technical services"
+  ],
+  "region": "Asia",
+  "city": "Not published",
+  "country": "Singapore",
+  "latitude": 1.352083,
+  "longitude": 103.819836,
+  "phone": "+65 6991 6045",
+  "email": "mike.liu@sedgwick.com",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Mike-Liu-Singapore.jpg",
+  "sourceUrl": "https://www.sedgwick.com/experts/mike-liu/",
+  "sourceExpertId": 37134,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}

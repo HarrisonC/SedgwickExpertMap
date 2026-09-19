@@ -1,0 +1,23 @@
+{
+  "id": "tom-mccaughey",
+  "name": "Tom McCaughey",
+  "role": "Director - Global Head of Yachts",
+  "expertise": [
+    "Marine",
+    "Yachts"
+  ],
+  "region": "Europe",
+  "city": "Not published",
+  "country": "United Kingdom",
+  "latitude": 55.378051,
+  "longitude": -3.435973,
+  "phone": "+44 7867 203529",
+  "email": "Thomas.McCaughey@Sedgwick.com",
+  "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Thomas-McCaughey-UK-1-e1773417578734.jpg",
+  "sourceUrl": "https://www.sedgwick.com/experts/tom-mccaughey/",
+  "sourceExpertId": 36535,
+  "sourceDirectoryUrl": "https://www.sedgwick.com/en-gb/experts/?expertise=marine&child-expertises=technical-services,yachts",
+  "retrievedAt": "2026-09-18",
+  "locationPrecision": "country",
+  "locationNotes": "Sedgwick publishes country-level coordinates only; city and office address are not published on this profile."
+}
