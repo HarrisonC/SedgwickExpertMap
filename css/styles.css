@@ -13,7 +13,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #1786ab; outline-offs
 .brand-header { min-height: 88px; display: flex; align-items: center; padding: 0 32px 0 0; background: #212121; color: #FFFFFF; gap: 30px; }
 .logo-panel { align-self: stretch; width: 242px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: white; border-bottom: 1px solid #e0e9ee; }
 .brand-logo { width: 180px; height: auto; }
-.header-title span { display: block; text-transform: uppercase; font-size: 12px; letter-spacing: .17em; color: #FFFFFF; margin-bottom: 5px; font-weight: 600; }
+.header-title span { display: block; text-transform: uppercase; font-size: 12px; letter-spacing: .17em; color: #00f584; margin-bottom: 5px; font-weight: 600; }
 .header-title h1 { font-size: 21px; font-weight: 400; letter-spacing: -.025em; line-height: 1.25; margin: 0; color: #FFFFFF;}
 .header-world { display: flex; gap: 9px; align-items: center; margin-left: auto; color: #FFFFFF; font-size: 13px; }
 .filter-bar { display: flex; gap: 24px; align-items: center; padding: 20px 28px; border-bottom: 1px solid #dbe5eb; background: #fff; z-index: 2; }
