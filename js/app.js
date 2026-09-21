@@ -1,6 +1,6 @@
 import { config } from '../config.js';
 import { validateProfiles, filterExperts, inBounds, fitExtent } from './experts.js';
-import { createProfileCard } from './profile-card.js';
+import { createProfileCard, createPortrait } from './profile-card.js';
 
 const $ = id => document.getElementById(id);
 let experts = [], filtered = [], visible = [], selected = null, map, ready = false, available = false;
@@ -24,13 +24,13 @@ function renderList() {
     const button = element('button','profile-button'); button.type = 'button'; button.setAttribute('aria-label',`Show ${p.name} on map`);
     const top = element('span','profile-top'), name = element('span','profile-name');
     name.append(element('strong','',p.name),element('span','',p.role));
-    const initials = element('span','expert-initials',p.name.split(' ').map(x=>x[0]).join(''));initials.setAttribute('aria-hidden','true');
-    top.append(initials,name,element('span','profile-arrow','↗'));
+    const portrait = createPortrait(p,'expert-initials',34,'span');
+    top.append(portrait,name,element('span','profile-arrow','↗'));
     const tags = element('span','tags'); for(const expertise of p.expertise) tags.append(element('span','',expertise));
     button.append(top,element('span','location',`${p.city}, ${p.country}`),tags);
     button.addEventListener('click',()=>selectExpert(p.id));card.append(button);
     const contacts = element('div','contact-links');
-    for(const [value,href] of [[p.email,`mailto:${p.email}`],[p.phone,`tel:${p.phone?.replace(/[^+\d]/g,'')}`]]) {
+    for(const [value,href] of [[p.email,`mailto:${p.email}`],[p.phone,`tel:${p.phone?.replace(/[^+\d]/g,'')}`],[p.sourceUrl && 'View Sedgwick profile',p.sourceUrl]]) {
       if(value) { const link=element('a','',value);link.href=href;contacts.append(link); }
     }
     card.append(contacts);fragment.append(card);
@@ -138,7 +138,10 @@ async function start() {
   try { initializeMap(token); } catch(error) { console.error(error);unavailable('The map is unavailable. You can still browse experts using the list and filters.'); }
 }
 function initializeMap(token) {
-  map=new mapboxgl.Map({container:'map',accessToken:token,style:'mapbox://styles/mapbox/light-v11',projection:'equirectangular',center:[8,15],zoom:.5,minZoom:-2,maxZoom:19,renderWorldCopies:false});
+  // At zoom 0 the equirectangular world is 512px wide. Keep the
+  // latitude span from 85°S to 85°N tall enough to fill the viewport.
+  const minimumZoom = () => Math.max(-2, Math.log2(Math.max(1,$('map').clientHeight) / (512 * 170 / 360)));
+  map=new mapboxgl.Map({container:'map',accessToken:token,style:'mapbox://styles/mapbox/light-v11',projection:'equirectangular',center:[8,15],zoom:.5,minZoom:minimumZoom(),maxZoom:19,maxBounds:[[-180,-85],[180,85]],renderWorldCopies:false});
   map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'bottom-right');map.dragRotate.disable();map.touchZoomRotate.disableRotation();
   map.on('moveend',()=>{if(ready)renderList();});
   const fail=()=>unavailable('The map is unavailable. You can still browse experts using the list and filters.');
@@ -176,6 +179,7 @@ function initializeMap(token) {
     ready=true;available=true;$('map-status').hidden=true;$('map-caption').hidden=true;fitMap(false);renderList();
   });
   new ResizeObserver(()=>{
+    map.setMinZoom(minimumZoom());
     map.resize();sizeProfile();
     const p=profilePopup && filtered.find(p=>p.id===selected);
     if(p) map.easeTo({center:[p.longitude,p.latitude],offset:profileOffset(),duration:0});
