@@ -29,11 +29,7 @@ function renderList() {
     const tags = element('span','tags'); for(const expertise of p.expertise) tags.append(element('span','',expertise));
     button.append(top,element('span','location',`${p.city}, ${p.country}`),tags);
     button.addEventListener('click',()=>selectExpert(p.id));card.append(button);
-    const contacts = element('div','contact-links');
-    for(const [value,href] of [[p.email,`mailto:${p.email}`],[p.phone,`tel:${p.phone?.replace(/[^+\d]/g,'')}`],[p.sourceUrl && 'View Sedgwick profile',p.sourceUrl]]) {
-      if(value) { const link=element('a','',value);link.href=href;contacts.append(link); }
-    }
-    card.append(contacts);fragment.append(card);
+    fragment.append(card);
   }
   if(!visible.length) {
     const empty = element('div','empty-state'); const reset = element('button','','Reset filters');reset.addEventListener('click',resetFilters);
