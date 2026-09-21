@@ -29,11 +29,7 @@ function renderList() {
     const tags = element('span','tags'); for(const expertise of p.expertise) tags.append(element('span','',expertise));
     button.append(top,element('span','location',`${p.city}, ${p.country}`),tags);
     button.addEventListener('click',()=>selectExpert(p.id));card.append(button);
-    const contacts = element('div','contact-links');
-    for(const [value,href] of [[p.email,`mailto:${p.email}`],[p.phone,`tel:${p.phone?.replace(/[^+\d]/g,'')}`],[p.sourceUrl && 'View Sedgwick profile',p.sourceUrl]]) {
-      if(value) { const link=element('a','',value);link.href=href;contacts.append(link); }
-    }
-    card.append(contacts);fragment.append(card);
+    fragment.append(card);
   }
   if(!visible.length) {
     const empty = element('div','empty-state'); const reset = element('button','','Reset filters');reset.addEventListener('click',resetFilters);
@@ -151,9 +147,15 @@ function initializeMap(token) {
     clearTimeout(timeout);
     if(map.getLayer('water'))map.setPaintProperty('water','fill-color','#b9dbe9');
     if(map.getLayer('background'))map.setPaintProperty('background','background-color','#f1f4f2');
+    // The light basemap uses dark Sedgwick text for every geographic label.
+    for (const layer of map.getStyle().layers) {
+      if (layer.type === 'symbol' && layer.layout?.['text-field']) {
+        map.setPaintProperty(layer.id, 'text-color', '#212121');
+      }
+    }
     map.addSource('experts',{type:'geojson',data:geojson(filtered),cluster:true,clusterRadius:42,clusterMaxZoom:16});
     map.addLayer({id:'clusters',type:'circle',source:'experts',filter:['has','point_count'],paint:{'circle-color':'#212121','circle-radius':['step',['get','point_count'],20,10,25],'circle-stroke-width':3,'circle-stroke-color':'#fff'}});
-    map.addLayer({id:'cluster-count',type:'symbol',source:'experts',filter:['has','point_count'],layout:{'text-field':['get','point_count_abbreviated'],'text-font':['DIN Offc Pro Medium','Arial Unicode MS Bold'],'text-size':14},paint:{'text-color':'#ffffff'}});
+    map.addLayer({id:'cluster-count',type:'symbol',source:'experts',filter:['has','point_count'],layout:{'text-field':['get','point_count_abbreviated'],'text-font':['DIN Offc Pro Medium','Arial Unicode MS Bold'],'text-size':14},paint:{'text-color':'#FFFFFF'}});
     map.addLayer({id:'points',type:'circle',source:'experts',filter:['!',['has','point_count']],paint:{'circle-color':'#212121','circle-radius':7,'circle-stroke-width':2,'circle-stroke-color':'#fff'}});
     map.addSource('selection',{type:'geojson',data:geojson([])});
     map.addLayer({id:'selection-ring',type:'circle',source:'selection',paint:{'circle-radius':14,'circle-color':'#0b4764','circle-opacity':.15,'circle-stroke-width':3,'circle-stroke-color':'#082f49'}});

@@ -85,7 +85,7 @@ node --test tests/*.test.mjs        # Run automated checks
 
 Filters combine with AND logic and fit the map to the matching experts. Reset restores the world view. The list shows individual experts within the viewport, including those inside numbered clusters. Click a cluster to zoom in, or select a list entry to highlight its location. Clicking overlapping individual markers cycles through co-located experts.
 
-Selecting an expert from the list or an individual marker opens a card beside their map location, with a portrait, name, title, expertise, location and available contact links. Only one card opens at a time. Close it with its close button or Escape; changing or resetting filters also closes it. On mobile, list selection scrolls to the map. Existing sidebar details remain available if the map cannot load.
+Selecting an expert from the list or an individual marker opens a card beside their map location, with a portrait, name, title, expertise, location and available contact links. Only one card opens at a time. Close it with its close button or Escape; changing or resetting filters also closes it. On mobile, list selection scrolls to the map. Email, phone and Sedgwick profile links appear only in the profile card. The sidebar shows names, roles, locations and expertise, and remains available if the map cannot load.
 
 ## Logo
 
