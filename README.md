@@ -97,4 +97,4 @@ Profiles keep `id`, `name`, `role`, `expertise`, `region`, `city`, `country`, `l
 
 The published coordinates are country-level locations, even where a city has been supplied separately. Existing curated profile values are preserved. The fictional example is stored in `examples/fictional-experts/`, outside the active dataset.
 
-`exports/sedgwick-marine-experts.zip` is the original data-only export. For profiles with local portraits, upload the current `data/experts/` and `images/profiles/` folders together.
+`offline/sedgwick-marine-experts.zip` is the original data-only export. For profiles with local portraits, upload the current `data/experts/` and `images/profiles/` folders together.
