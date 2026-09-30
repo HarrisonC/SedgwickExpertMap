@@ -76,7 +76,7 @@ html = replace(html, '<script type="module" src="js/app.js"></script>', '');
 html = html.replace(/(src|href)="(images\/[^\"]+)"/g, (_, attr, path) => `${attr}="${asset(path)}"`);
 html = replace(html, '</body>', `<script>\n${inline(bundle)}\n</script>\n</body>`);
 html = html.replace(/^[ \t]+$/gm, '');
-const output = resolve(root, process.argv[3] || 'exports/sedgwick-marine-experts.html');
+const output = resolve(root, process.argv[3] || 'offline/sedgwick-marine-experts.html');
 mkdirSync(dirname(output), {recursive: true});
 writeFileSync(output, html);
 console.log(`Exported ${validated.length} profiles and ${Object.keys(images).length} portraits from ${commit.slice(0, 7)} to ${output} (${Buffer.byteLength(html)} bytes)`);

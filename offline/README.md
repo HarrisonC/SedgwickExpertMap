@@ -13,7 +13,7 @@ To regenerate this export from its original main-branch snapshot on macOS
 (Node.js and the built-in `sips` image tool required):
 
 ```sh
-node scripts/export-single-html.mjs 15686df6def8995e3fdb11a8c65b7afd8e0c3d79 exports/Sedgwick-Experts-Map-v2.html --optimize-images
+node scripts/export-single-html.mjs 15686df6def8995e3fdb11a8c65b7afd8e0c3d79 offline/Sedgwick-Experts-Map-v2.html --optimize-images
 ```
 
 Replace the commit with `origin/main` to export a newer fetched main branch.
