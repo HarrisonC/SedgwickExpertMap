@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProfile, optionalFields, profileId, profileJSON, requiredFields } from '../js/profile.js';
+import { buildProfile, optionalFields, profileId, profileJSON, readProfileJSON, requiredFields } from '../js/profile.js';
 import { validateProfiles } from '../../js/experts.js';
+import { loadProfiles } from '../../scripts/validate-experts.mjs';
 
 const input = {
   id: 'alex-morgan', name: 'Alex Morgan', role: 'Marine cargo surveyor',
@@ -64,4 +65,39 @@ test('URLs require HTTP(S) and local portraits must match the profile ID', () =>
   }
   for (const imagePath of ['images/profiles/other.jpg', 'images/profiles/alex-morgan.svg', '../alex-morgan.jpg']) assert.ok(buildProfile({ ...input, imagePath }).errors.imagePath);
   for (const extension of ['jpg', 'png', 'webp']) assert.deepEqual(buildProfile({ ...input, imagePath: `images/profiles/alex-morgan.${extension}` }).errors, {});
+});
+
+test('existing profiles round trip through the editor without losing details', () => {
+  for (const original of loadProfiles('data/experts')) {
+    const { profile, values } = readProfileJSON(profileJSON(original));
+    const result = buildProfile({ ...values, expertise: profile.expertise }, profile);
+    assert.deepEqual(result.errors, {});
+    assert.deepEqual(result.profile, original);
+  }
+});
+
+test('imported profiles retain extra fields, exact coordinates and comma-containing expertise', () => {
+  const original = {
+    ...buildProfile(input).profile,
+    latitude: 51.50740012345, longitude: -0.12780098765,
+    expertise: ['Cargo, including refrigerated goods', 'Marine engineering'],
+    qualifications: ['Master mariner'], metadata: { verified: true },
+    email: 'alex@example.com', phone: '+44 20 1234 5678',
+  };
+  const { profile, values } = readProfileJSON(`\uFEFF${profileJSON(original)}`);
+  const updated = buildProfile({ ...values, expertise: profile.expertise, name: 'Alex Updated', email: '', phone: '' }, profile);
+  assert.deepEqual(updated.errors, {});
+  const expected = { ...original, name: 'Alex Updated' };
+  delete expected.email;
+  delete expected.phone;
+  assert.deepEqual(updated.profile, expected);
+  assert.equal(original.email, 'alex@example.com');
+});
+
+test('invalid JSON and non-profile files are rejected before editing', () => {
+  for (const source of ['{broken', '', 'null', '[]', '["alex.json"]', '"profile"', '{}']) assert.throws(() => readProfileJSON(source));
+  const original = buildProfile(input).profile;
+  assert.throws(() => readProfileJSON(JSON.stringify({ ...original, expertise: 'Marine' })), /expertise/);
+  assert.throws(() => readProfileJSON(JSON.stringify({ ...original, latitude: '51.5' })), /latitude/);
+  assert.throws(() => readProfileJSON(JSON.stringify({ ...original, longitude: 181 })), /longitude/);
 });

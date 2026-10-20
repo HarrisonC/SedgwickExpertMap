@@ -9,13 +9,14 @@ export function profileId(name) {
 }
 
 // Keep input conversion separate from the UI so downloads and previews agree.
-export function buildProfile(values) {
+export function buildProfile(values, existingProfile = {}) {
   const errors = {};
   const text = field => String(values[field] ?? '').trim();
-  const profile = {};
+  const profile = { ...existingProfile };
   for (const field of ['id', 'name', 'role']) profile[field] = text(field);
   const seen = new Set();
-  profile.expertise = text('expertise').split(/[,\n]/).map(item => item.trim()).filter(item => {
+  const expertise = Array.isArray(values.expertise) ? values.expertise : text('expertise').split(/[,\n]/);
+  profile.expertise = expertise.map(item => item.trim()).filter(item => {
     const key = item.toLowerCase();
     if (!key || seen.has(key)) return false;
     seen.add(key);
@@ -27,7 +28,10 @@ export function buildProfile(values) {
     // null makes unfinished JSON explicit; a blank coordinate must never become 0.
     profile[field] = value && Number.isFinite(Number(value)) ? Number(value) : null;
   }
-  for (const field of optionalFields) if (text(field)) profile[field] = text(field);
+  for (const field of optionalFields) {
+    delete profile[field];
+    if (text(field)) profile[field] = text(field);
+  }
 
   for (const field of requiredFields) {
     if (!text(field)) errors[field] = field === 'expertise' ? 'Enter at least one area of expertise.' : 'This field is required.';
@@ -57,4 +61,16 @@ export function buildProfile(values) {
 
 export function profileJSON(profile) {
   return `${JSON.stringify(profile, null, 2)}\n`;
+}
+
+export function readProfileJSON(source) {
+  let profile;
+  try { profile = JSON.parse(source.replace(/^\uFEFF/, '')); }
+  catch { throw new Error('The file is not valid JSON.'); }
+  // Validate before changing the form, so rejected files cannot erase edits.
+  validateProfiles({ 'Profile': profile });
+  const values = Object.fromEntries([...requiredFields, ...optionalFields].map(field => [
+    field, field === 'expertise' ? profile.expertise.join('\n') : String(profile[field] ?? ''),
+  ]));
+  return { profile, values };
 }

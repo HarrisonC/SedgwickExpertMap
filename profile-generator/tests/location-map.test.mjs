@@ -74,6 +74,19 @@ test('reset restores the initial map and marker without selecting that location'
   assert.equal(selections.length, 1);
 });
 
+test('imported locations move the marker before map load without modifying coordinates', t => {
+  const { map, marker, picker, selections } = fixture(t);
+  const location = { latitude: 51.50740012345, longitude: -0.12780098765 };
+  picker.setLocation(location);
+  assert.deepEqual(marker.position, { lng: location.longitude, lat: location.latitude });
+  assert.deepEqual(map.lastJump, { center: [location.longitude, location.latitude], zoom: 4 });
+  map.events.load();
+  assert.deepEqual(marker.position, { lng: location.longitude, lat: location.latitude });
+  assert.deepEqual(selections, []);
+  picker.reset();
+  assert.deepEqual(marker.position, { lng: 0, lat: 20 });
+});
+
 test('unavailable maps report an error and do not commit a location', t => {
   const { map, picker, selections, statuses } = fixture(t);
   map.events.error({ error: new Error('HTTP 401 Unauthorized') });

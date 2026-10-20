@@ -54,6 +54,12 @@ export function createLocationMap({ mapboxgl, container, accessToken, onSelect, 
   }
   return {
     useCenter() { if (ready) select(map.getCenter()); },
+    setLocation({ latitude, longitude }) {
+      // Loading a saved profile moves the marker without rounding its stored values
+      // or firing the user-selection callback, including before the map loads.
+      marker?.setLngLat([longitude, latitude]);
+      map?.jumpTo({ center: [longitude, latitude], zoom: 4 });
+    },
     reset() {
       marker?.setLngLat(initialCenter);
       map?.jumpTo({ center: initialCenter, zoom: initialZoom });

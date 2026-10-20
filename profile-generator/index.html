@@ -19,7 +19,11 @@
   <main class="page">
     <div class="page-heading">
       <h1>Expert profile generator</h1>
+      <button id="load-json" type="button" class="load-button">Load JSON</button>
+      <input id="profile-file" type="file" accept=".json,application/json" aria-label="Load existing profile JSON" hidden>
     </div>
+    <p id="import-status" class="import-status" role="status" hidden></p>
+    <p id="import-error" class="field-error import-error" role="alert" hidden></p>
     <div class="builder-layout">
       <form id="profile-form" novalidate>
         <div class="form-heading"><p><span class="required-marker">*</span> Required</p></div>

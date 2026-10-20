@@ -1,4 +1,4 @@
-import { buildProfile, optionalFields, profileId, profileJSON, requiredFields } from './profile.js';
+import { buildProfile, optionalFields, profileId, profileJSON, readProfileJSON, requiredFields } from './profile.js';
 import { config } from '../config.js';
 import { createLocationMap } from './location-map.js';
 
@@ -12,6 +12,12 @@ let customId = false;
 let submitted = false;
 let current;
 let locationMap;
+let importedProfile = {};
+let importedExpertiseText;
+let importVersion = 0;
+const fileInput = document.querySelector('#profile-file');
+const importStatus = document.querySelector('#import-status');
+const importError = document.querySelector('#import-error');
 const coordinateFields = ['latitude', 'longitude'];
 const userRequiredFields = [...requiredFields.filter(field => !coordinateFields.includes(field)), 'location'];
 const locationPicker = document.querySelector('#location-picker');
@@ -58,7 +64,9 @@ function displayErrors(errors) {
 
 function update() {
   const values = Object.fromEntries(new FormData(form));
-  current = buildProfile(values);
+  // Preserve existing labels containing commas until the expertise field is edited.
+  if (values.expertise === importedExpertiseText) values.expertise = importedProfile.expertise;
+  current = buildProfile(values, importedProfile);
   const { profile, errors } = current;
   document.querySelector('#preview-name').textContent = profile.name || 'Expert name';
   document.querySelector('#preview-role').textContent = profile.role || 'Job title';
@@ -140,6 +148,13 @@ copyButton.addEventListener('click', async () => {
 
 function resetState() {
   form.reset();
+  importedProfile = {};
+  importedExpertiseText = undefined;
+  importStatus.hidden = true;
+  importStatus.textContent = '';
+  importError.hidden = true;
+  importError.textContent = '';
+  fileInput.value = '';
   // Hidden inputs use their current value as the reset default.
   for (const field of coordinateFields) form.elements.namedItem(field).value = '';
   customId = false;
@@ -148,11 +163,40 @@ function resetState() {
   actionStatus.textContent = '';
 }
 document.querySelector('#clear-form').addEventListener('click', () => {
+  importVersion++;
   resetState();
   locationMap?.reset();
   document.querySelector('#location-coordinates').textContent = 'No location selected';
   update();
   form.elements.namedItem('name').focus();
+});
+
+document.querySelector('#load-json').addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const version = ++importVersion;
+  try {
+    const loaded = readProfileJSON(await file.text());
+    if (version !== importVersion) return;
+    resetState();
+    importedProfile = loaded.profile;
+    importedExpertiseText = loaded.values.expertise;
+    for (const [field, value] of Object.entries(loaded.values)) form.elements.namedItem(field).value = value;
+    customId = true;
+    submitted = true;
+    update();
+    locationMap?.setLocation(loaded.profile);
+    document.querySelector('#location-coordinates').textContent = `${loaded.profile.latitude}, ${loaded.profile.longitude}`;
+    importStatus.textContent = `Loaded ${file.name}`;
+    importStatus.hidden = false;
+  } catch (error) {
+    if (version !== importVersion) return;
+    importError.textContent = `Could not load ${file.name}: ${error.message}`;
+    importError.hidden = false;
+  } finally {
+    if (version === importVersion) fileInput.value = '';
+  }
 });
 update();
 
@@ -181,6 +225,8 @@ async function startMap() {
       document.querySelector('#use-map-center').disabled = !ready;
     },
   });
+  // An import may finish while the local token or Mapbox bundle is still loading.
+  if (current.profile.latitude !== null && current.profile.longitude !== null) locationMap.setLocation(current.profile);
 }
 document.querySelector('#use-map-center').addEventListener('click', () => locationMap?.useCenter());
 // Wait for the deferred Mapbox bundle, including its failure to load.
