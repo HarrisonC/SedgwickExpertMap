@@ -6,13 +6,14 @@ import { fileURLToPath } from 'node:url';
 import { Script } from 'node:vm';
 
 // Read a committed snapshot so an older or modified checkout cannot mix versions.
-// Usage: node scripts/export-single-html.mjs [git-ref] [output-path] [--optimize-images]
+// Usage: node scripts/export-single-html.mjs [git-ref|--working-tree] [output-path] [--optimize-images]
 // Image optimization uses macOS sips, preserves originals, and caps portraits at 256px.
 const optimizeImages = process.argv.includes('--optimize-images');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const ref = process.argv[2] || 'origin/main';
-const commit = execFileSync('git', ['rev-parse', '--verify', `${ref}^{commit}`], {cwd: root, encoding: 'utf8'}).trim();
-const read = path => execFileSync('git', ['show', `${commit}:${path}`], {cwd: root, maxBuffer: 32 * 1024 * 1024});
+const workingTree = ref === '--working-tree';
+const commit = workingTree ? 'working-tree' : execFileSync('git', ['rev-parse', '--verify', `${ref}^{commit}`], {cwd: root, encoding: 'utf8'}).trim();
+const read = path => workingTree ? readFileSync(resolve(root, path)) : execFileSync('git', ['show', `${commit}:${path}`], {cwd: root, maxBuffer: 32 * 1024 * 1024});
 const source = path => read(path).toString('utf8');
 const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
 const inline = code => code.replace(/<\/script/gi, '<\\/script');
@@ -46,12 +47,8 @@ const images = Object.fromEntries(Object.values(profiles).filter(p => p.imagePat
 const helpers = plain(source('js/experts.js'));
 const validated = new Script(`${helpers}\nvalidateProfiles(${json(profiles)})`).runInNewContext();
 let cards = plain(source('js/profile-card.js'));
-cards = replace(cards, 'image.src = profile.imagePath;', 'image.src = embeddedImages[profile.imagePath];');
+const loader = plain(source('js/load-experts.js').replace(/^import .*;\r?\n/gm, ''));
 let app = source('js/app.js').replace(/^import .*;\r?\n/gm, '');
-const loadStart = app.indexOf("    const files=await fetchJSON('data/experts/index.json');");
-const loadEnd = app.indexOf('filtered=experts;', loadStart);
-if (loadStart < 0 || loadEnd < 0) throw new Error('Source changed: profile loading block not found');
-app = app.slice(0, loadStart) + '    experts=validateProfiles(embeddedProfiles);' + app.slice(loadEnd);
 app = replace(app, "  // Local-only convenience file, excluded from Git. Hosted sites use config.js.\n  if(!token) { try { token=(await fetchJSON('config.local.json')).mapboxToken; } catch {} }\n", '');
 app = app.replace(/async function fetchJSON\(url\) \{[\s\S]*?\n\}\n/, '');
 app = replace(app, 'function initializeMap(token) {', `function initializeMap(token) {
@@ -67,7 +64,7 @@ app = replace(app, 'function initializeMap(token) {', `function initializeMap(to
   }`);
 const config = plain(source('config.js'));
 if (!/mapboxToken:\s*["']pk\./.test(config)) throw new Error('The source snapshot needs a public Mapbox token');
-const bundle = `(() => {\n${config}\nconst embeddedProfiles=${json(profiles)};\nconst embeddedImages=${json(images)};\n${helpers}\n${cards}\n${app}\n})();`;
+const bundle = `(() => {\n${config}\nconst embeddedProfiles=${json(profiles)};\nconst embeddedImages=${json(images)};\nconfig.expertData = {indexUrl: config.offlineExpertsIndexUrl, fallbackEntries: embeddedProfiles, embeddedImages};\n${helpers}\n${loader}\n${cards}\n${app}\n})();`;
 new Script(bundle); // Check the complete generated JavaScript before writing.
 let html = source('index.html');
 html = replace(html, '<html lang="en">', `<html lang="en">\n<!-- Single-file export of main snapshot ${commit}. Mapbox requires internet access. -->`);
