@@ -14,7 +14,7 @@ export function createPortrait(profile, className, size, tag = 'div') {
     image.alt = '';
     image.width = image.height = size;
     image.addEventListener('error', () => portrait.replaceChildren(initials), {once: true});
-    image.src = profile.imagePath;
+    image.src = profile.portraitSrc || profile.imagePath;
     portrait.append(image);
   } else portrait.textContent = initials;
   return portrait;

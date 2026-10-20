@@ -13,6 +13,7 @@ js/
   app.js                   Loads profiles, renders the list and controls Mapbox
   profile-card.js          Builds the selected expert's map card
   experts.js               Profile validation, filters and geographic helpers
+  load-experts.js          Shared JSON loading and portable HTML fallback
 images/
   sedgwick-logo.png         Current official Sedgwick wordmark
   favicon.svg              Browser tab icon
@@ -82,6 +83,12 @@ node --test tests/*.test.mjs        # Run automated checks
 `scripts/`, `tests/`, `package.json`, `.gitignore`, and this README are development/maintenance files. **They do not need to be uploaded.** `package.json` only offers convenient `npm run dev`, `npm test`, and `npm run update:experts` aliases; the website does not use npm.
 
 ## Behaviour
+
+The portable HTML uses the same profile loader and interface as the hosted site.
+It checks `config.offlineExpertsIndexUrl` first and falls back to its embedded
+snapshot on a failed or invalid response or after five seconds. The hosted site
+continues to read its own `data/experts/index.json`. See
+[offline/README.md](offline/README.md) for hosting and export instructions.
 
 Filters combine with AND logic and fit the map to the matching experts. Reset restores the world view. The list shows individual experts within the viewport, including those inside numbered clusters. Click a cluster to zoom in, or select a list entry to highlight its location. Clicking overlapping individual markers cycles through co-located experts.
 

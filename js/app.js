@@ -1,5 +1,6 @@
 import { config } from '../config.js';
-import { validateProfiles, filterExperts, inBounds, fitExtent } from './experts.js';
+import { filterExperts, inBounds, fitExtent } from './experts.js';
+import { loadExpertProfiles } from './load-experts.js';
 import { createProfileCard, createPortrait } from './profile-card.js';
 
 const $ = id => document.getElementById(id);
@@ -112,10 +113,7 @@ async function fetchJSON(url) {
 }
 async function start() {
   try {
-    const files=await fetchJSON('data/experts/index.json');
-    if(!Array.isArray(files)||files.some(f=>typeof f!=='string'||!(/^[a-z0-9-]+\.json$/).test(f)||f==='index.json')||new Set(files).size!==files.length) throw new Error('Invalid profile index');
-    const entries=await Promise.all(files.map(async file=>[file,await fetchJSON(`data/experts/${file}`)]));
-    experts=validateProfiles(Object.fromEntries(entries));filtered=experts;
+    experts=await loadExpertProfiles(config.expertData);filtered=experts;
     for(const [id,values] of [['expertise',experts.flatMap(p=>p.expertise)],['region',experts.map(p=>p.region)]]) {
       for(const value of [...new Set(values)].sort()) $(id).add(new Option(value,value));
       $(id).disabled=false;$(id).addEventListener('change',applyFilters);
