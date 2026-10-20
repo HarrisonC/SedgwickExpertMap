@@ -8,7 +8,9 @@ createServer(async(req,res)=>{
   try {
     let path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
     if(path==='/')path='/index.html';
-    if(!/^\/(index\.html|config\.js|config\.local\.json|(?:css|js|images|data)\/[^\0]*)$/.test(path)) {res.writeHead(404);res.end('Not found');return;}
+    if(path==='/profile-generator') {res.writeHead(308,{'Location':'/profile-generator/'});res.end();return;}
+    if(path==='/profile-generator/')path='/profile-generator/index.html';
+    if(!/^\/(index\.html|config\.js|config\.local\.json|(?:css|js|images|data)\/[^\0]*|profile-generator\/(?:index\.html|config\.js|config\.local\.json|(?:css|js)\/[^\0]*))$/.test(path)) {res.writeHead(404);res.end('Not found');return;}
     const file=resolve(root,'.'+path);if(!file.startsWith(root+'/'))throw new Error('Invalid path');
     const body=await readFile(file);res.writeHead(200,{'Content-Type':mime[extname(file)]??'application/octet-stream','Cache-Control':'no-store'});res.end(body);
   } catch {res.writeHead(404);res.end('Not found');}

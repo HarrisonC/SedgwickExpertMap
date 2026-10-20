@@ -47,6 +47,8 @@ Open http://localhost:5173/. No `npm install` is required. Alternatively use you
 
 ## Add, edit or remove an expert
 
+The internal [profile generator](profile-generator/README.md) creates validated expert JSON files through a browser form with a draggable Mapbox location marker. Run `npm run dev` and open http://localhost:5173/profile-generator/. Its page, scripts, styles, Mapbox configuration and tests are kept in `profile-generator/`; it reuses the directory's shared validator and brand images. It does not update the expert data automatically.
+
 Edit a file in `data/experts/` and upload it to update a profile. **No rebuild is required.** Reload the page to see changes (your hosting provider may also cache uploaded files).
 
 To add an expert, copy an existing profile, use a unique lowercase hyphenated `id`, and add its filename to `data/experts/index.json`. To remove one, remove its filename from the index and delete the profile. Browsers cannot discover files in a server folder automatically, which is why the index is needed.

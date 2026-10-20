@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expert profile generator | Sedgwick</title>
+  <meta name="description" content="Create and download an expert profile for the Sedgwick Marine Expert Map.">
+  <link rel="icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.31.0/mapbox-gl.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v3.31.0/mapbox-gl.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><img src="../images/sedgwick-logo.png" alt="Sedgwick" width="180" height="39"></div>
+    <span class="service-name">Marine Technical Services</span>
+  </header>
+  <main class="page">
+    <div class="page-heading">
+      <h1>Expert profile generator</h1>
+    </div>
+    <div class="builder-layout">
+      <form id="profile-form" novalidate>
+        <div class="form-heading"><p><span class="required-marker">*</span> Required</p></div>
+        <div class="error-summary" id="error-summary" role="alert" hidden></div>
+        <section class="form-section" aria-labelledby="identity-heading">
+          <div class="section-heading"><h2 id="identity-heading">Expert details</h2></div>
+          <div class="fields">
+            <div class="field"><label for="name">Full name <span>*</span></label><input id="name" name="name" autocomplete="name" placeholder="e.g. Alex Morgan" required aria-describedby="name-error"><p class="field-error" id="name-error" hidden></p></div>
+            <div class="field"><label for="id">Profile ID <span>*</span></label><input id="id" name="id" placeholder="e.g. alex-morgan" required spellcheck="false" autocapitalize="none" aria-describedby="id-hint id-error"><p class="hint" id="id-hint">Created from the name. You can edit it.</p><p class="field-error" id="id-error" hidden></p></div>
+            <div class="field full"><label for="role">Job title <span>*</span></label><input id="role" name="role" placeholder="e.g. Marine cargo surveyor" required aria-describedby="role-error"><p class="field-error" id="role-error" hidden></p></div>
+            <div class="field full"><label for="expertise">Areas of expertise <span>*</span></label><textarea id="expertise" name="expertise" rows="3" placeholder="Cargo, Marine engineering" required aria-describedby="expertise-hint expertise-error"></textarea><p class="hint" id="expertise-hint">Separate each area with a comma or a new line.</p><p class="field-error" id="expertise-error" hidden></p><div class="suggestions" aria-label="Add an area of expertise"><button type="button" data-expertise="Marine">+ Marine</button><button type="button" data-expertise="Cargo">+ Cargo</button><button type="button" data-expertise="Electrical Engineering">+ Electrical Engineering</button><button type="button" data-expertise="Technical services">+ Technical services</button></div></div>
+          </div>
+        </section>
+        <section class="form-section" aria-labelledby="location-heading">
+          <div class="section-heading"><h2 id="location-heading">Location</h2></div>
+          <div class="fields">
+            <div class="field"><label for="region">Region <span>*</span></label><input id="region" name="region" list="regions" placeholder="Select or enter a region" required aria-describedby="region-error"><datalist id="regions"><option value="Africa"></option><option value="Asia"></option><option value="Europe"></option><option value="Latin America"></option><option value="Middle East"></option><option value="North America"></option><option value="Oceania"></option></datalist><p class="field-error" id="region-error" hidden></p></div>
+            <div class="field"><label for="country">Country <span>*</span></label><input id="country" name="country" autocomplete="country-name" placeholder="e.g. United Kingdom" required aria-describedby="country-error"><p class="field-error" id="country-error" hidden></p></div>
+            <div class="field full"><label for="city">City <span>*</span></label><input id="city" name="city" autocomplete="address-level2" placeholder="e.g. London" required aria-describedby="city-hint city-error"><p class="hint" id="city-hint">Enter “Not published” if the city is unavailable.</p><p class="field-error" id="city-error" hidden></p></div>
+            <div class="field full">
+              <p class="field-label" id="map-location-label">Map location <span>*</span></p>
+              <p class="hint map-hint" id="map-location-hint">Drag the marker or click the map.</p>
+              <div id="location-picker" class="location-picker" role="group" tabindex="-1" aria-labelledby="map-location-label" aria-describedby="map-location-hint location-error">
+                <div class="location-map-frame">
+                  <div id="location-map" class="location-map" aria-label="Choose expert location"></div>
+                  <p id="location-map-status" class="location-map-status" role="status">Loading map…</p>
+                </div>
+                <div class="map-toolbar"><output id="location-coordinates" aria-live="polite">No location selected</output><button id="use-map-center" type="button" class="text-button" disabled>Use map centre</button></div>
+              </div>
+              <input id="latitude" name="latitude" type="hidden">
+              <input id="longitude" name="longitude" type="hidden">
+              <p class="field-error" id="location-error" hidden></p>
+            </div>
+          </div>
+        </section>
+        <section class="form-section" aria-labelledby="contact-heading">
+          <div class="section-heading"><h2 id="contact-heading">Contact &amp; references <span class="optional">Optional</span></h2></div>
+          <div class="fields">
+            <div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="alex.morgan@sedgwick.com" aria-describedby="email-error"><p class="field-error" id="email-error" hidden></p></div>
+            <div class="field"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+44 (0) 20 1234 5678" aria-describedby="phone-error"><p class="field-error" id="phone-error" hidden></p></div>
+            <div class="field full"><label for="sourceUrl">Public profile URL</label><input id="sourceUrl" name="sourceUrl" type="url" placeholder="https://www.sedgwick.com/experts/alex-morgan/" aria-describedby="sourceUrl-error"><p class="field-error" id="sourceUrl-error" hidden></p></div>
+            <div class="field full"><label for="imageUrl">Original portrait URL</label><input id="imageUrl" name="imageUrl" type="url" placeholder="https://www.sedgwick.com/…/portrait.jpg" aria-describedby="imageUrl-error"><p class="field-error" id="imageUrl-error" hidden></p></div>
+            <div class="field full"><label for="imagePath">Local portrait path</label><input id="imagePath" name="imagePath" placeholder="images/profiles/alex-morgan.jpg" spellcheck="false" aria-describedby="imagePath-hint imagePath-error"><p class="hint" id="imagePath-hint">images/profiles/&lt;profile-id&gt;.jpg, .png or .webp</p><p class="field-error" id="imagePath-error" hidden></p></div>
+          </div>
+        </section>
+        <div class="form-footer"><button class="text-button" id="clear-form" type="button">Clear form</button></div>
+      </form>
+      <aside class="output-panel" aria-label="Profile preview and export">
+        <div class="output-heading"><h2>Preview</h2></div>
+        <div class="profile-preview">
+          <div class="preview-person"><div id="preview-initials" class="preview-initials" aria-hidden="true">—</div><div><h3 id="preview-name">Expert name</h3><p id="preview-role">Job title</p></div></div>
+          <p class="preview-location" id="preview-location">City, Country</p>
+          <div class="preview-expertise" id="preview-expertise"><span>Areas of expertise</span></div>
+          <div class="preview-contact" id="preview-contact" hidden></div>
+        </div>
+        <div class="json-heading"><h3>JSON output</h3><button class="text-button" id="copy-json" type="button" disabled>Copy JSON</button></div>
+        <pre class="json-preview" tabindex="0" aria-label="Generated profile JSON"><code id="json-output"></code></pre>
+        <div class="export-panel">
+          <div class="export-status"><span class="status-dot" id="status-dot" aria-hidden="true"></span><p id="completion-status" role="status">0 of 8 required fields complete</p></div>
+          <button type="submit" form="profile-form" class="download-button" id="download-json">Download JSON <span aria-hidden="true">↓</span></button>
+          <p class="filename" id="filename">profile.json</p>
+          <p class="action-status" id="action-status" role="status"></p>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <noscript><p class="noscript">Enable JavaScript to create and download a profile.</p></noscript>
+</body>
+</html>
