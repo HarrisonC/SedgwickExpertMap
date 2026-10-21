@@ -2,9 +2,13 @@
   "id": "alex-morgan",
   "name": "Alex Morgan",
   "role": "Marine cargo surveyor",
-  "expertise": [
-    "Cargo",
-    "Marine engineering"
+  "claimExpertise": [
+    { "claimType": "Cargo", "subCategory": "Dry Bulk" },
+    { "claimType": "Cargo", "subCategory": "Containers" }
+  ],
+  "vesselTypes": [
+    "Dry Bulk",
+    "Container"
   ],
   "region": "Europe",
   "city": "London",

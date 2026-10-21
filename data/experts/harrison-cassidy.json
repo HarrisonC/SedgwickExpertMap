@@ -2,9 +2,6 @@
   "id": "harrison-cassidy",
   "name": "Harrison Cassidy",
   "role": "Senior Electro Technical Manager",
-  "expertise": [
-    "Electrical Engineering"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "United Kingdom",
@@ -14,5 +11,7 @@
   "email": "harrison.cassidy@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/07/Harrison-Cassidy-e1785245046699.png",
   "sourceUrl": "https://www.sedgwick.com/experts/harrison-cassidy/",
-  "imagePath": "images/profiles/harrison-cassidy.png"
+  "imagePath": "images/profiles/harrison-cassidy.png",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

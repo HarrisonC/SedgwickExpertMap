@@ -2,10 +2,6 @@
   "id": "annabell-smith",
   "name": "Annabell Smith",
   "role": "Senior adjuster - yachts",
-  "expertise": [
-    "Marine",
-    "Yachts"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "United Kingdom",
@@ -15,5 +11,7 @@
   "email": "Annabell.Smith@Sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Annabell-Smith-Spain-e1769610494679.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/annabell-smith/",
-  "imagePath": "images/profiles/annabell-smith.jpg"
+  "imagePath": "images/profiles/annabell-smith.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

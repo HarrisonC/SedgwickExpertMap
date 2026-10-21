@@ -2,11 +2,12 @@ import { config } from '../config.js';
 import { filterExperts, inBounds, fitExtent } from './experts.js';
 import { loadExpertProfiles } from './load-experts.js';
 import { createProfileCard, createPortrait } from './profile-card.js';
+import { claimTypes } from './claim-types.js';
 
 const $ = id => document.getElementById(id);
 let experts = [], filtered = [], visible = [], selected = null, map, ready = false, available = false;
 let profilePopup = null;
-const world = () => $('expertise').value === 'all' && $('region').value === 'all';
+const world = () => $('claim-type').value === 'all' && $('region').value === 'all';
 const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600;
 const geojson = profiles => ({type:'FeatureCollection', features:profiles.map(p => ({type:'Feature',properties:{id:p.id},geometry:{type:'Point',coordinates:[p.longitude,p.latitude]}}))});
 function element(tag, className, text) {
@@ -27,7 +28,10 @@ function renderList() {
     name.append(element('strong','',p.name),element('span','',p.role));
     const portrait = createPortrait(p,'expert-initials',34,'span');
     top.append(portrait,name,element('span','profile-arrow','↗'));
-    const tags = element('span','tags'); for(const expertise of p.expertise) tags.append(element('span','',expertise));
+    const tags = element('span','tags');
+    for(const item of p.claimExpertise ?? []) {
+      const tag = element('span','',item.subCategory); tag.title = item.claimType; tags.append(tag);
+    }
     button.append(top,element('span','location',`${p.city}, ${p.country}`),tags);
     button.addEventListener('click',()=>selectExpert(p.id));card.append(button);
     fragment.append(card);
@@ -96,11 +100,19 @@ function fitMap(animate=true) {
 }
 function applyFilters() {
   closeProfile();
-  selected=null; filtered=filterExperts(experts,$('expertise').value,$('region').value);
+  selected=null; filtered=filterExperts(experts,$('claim-type').value,$('sub-category').value,$('region').value);
   if(ready) map.getSource('experts').setData(geojson(filtered));
   renderList();fitMap();
 }
-function resetFilters() { $('expertise').value='all';$('region').value='all';applyFilters(); }
+function updateSubCategories() {
+  const type = $('claim-type').value;
+  const select = $('sub-category');
+  select.replaceChildren(new Option(type === 'all' ? 'Choose claim type' : 'All sub-categories', 'all'));
+  for (const value of claimTypes[type] ?? []) select.add(new Option(value, value));
+  select.disabled = type === 'all';
+  select.setAttribute('aria-label', type === 'all' ? 'Claim sub-category — select a claim type first' : 'Claim sub-category');
+}
+function resetFilters() { $('claim-type').value='all';updateSubCategories();$('region').value='all';applyFilters(); }
 function unavailable(message) {
   closeProfile();
   available=false;$('map-caption').hidden=true;$('map-status').hidden=false;
@@ -114,7 +126,11 @@ async function fetchJSON(url) {
 async function start() {
   try {
     experts=await loadExpertProfiles(config.expertData);filtered=experts;
-    for(const [id,values] of [['expertise',experts.flatMap(p=>p.expertise)],['region',experts.map(p=>p.region)]]) {
+    for (const value of Object.keys(claimTypes)) $('claim-type').add(new Option(value, value));
+    $('claim-type').disabled = false;
+    $('claim-type').addEventListener('change', () => {updateSubCategories();applyFilters();});
+    $('sub-category').addEventListener('change', applyFilters);
+    for(const [id,values] of [['region',experts.map(p=>p.region)]]) {
       for(const value of [...new Set(values)].sort()) $(id).add(new Option(value,value));
       $(id).disabled=false;$(id).addEventListener('change',applyFilters);
     }

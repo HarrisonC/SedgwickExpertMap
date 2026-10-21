@@ -2,9 +2,6 @@
   "id": "kim-chua",
   "name": "Kim Chua",
   "role": "Metallurgist Director of Science, Asia",
-  "expertise": [
-    "Metallurgist"
-  ],
   "region": "Asia",
   "city": "Not published",
   "country": "Singapore",
@@ -14,5 +11,7 @@
   "email": "kim.chua@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Kim-Chua-Singapore.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/kim-chua/",
-  "imagePath": "images/profiles/kim-chua.jpg"
+  "imagePath": "images/profiles/kim-chua.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

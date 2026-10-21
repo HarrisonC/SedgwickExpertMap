@@ -1,9 +1,13 @@
 # Single-file version
 
 Open `Sedgwick-Experts-Map-v2.html` directly in a browser. This approximately
-594 KB file embeds the website, all 34 profiles, and compressed portraits.
+602 KB file embeds the website, all 34 profiles, and compressed portraits.
 It retains the public Mapbox token and uses classic workers for local-file
 compatibility in Chrome.
+
+This version includes the claim type and dependent sub-category filters. Vessel
+types appear only on profile cards. The embedded snapshot has empty claim and
+vessel assignments, ready for updates from the profile generator.
 
 Internet access is still required for the Mapbox library, styles, and map tiles.
 The `offline-version` branch provides a portable local HTML file, not an offline

@@ -2,9 +2,6 @@
   "id": "adam-jackson",
   "name": "Adam Jackson",
   "role": "Director – Marine Chemistry",
-  "expertise": [
-    "Chemist"
-  ],
   "region": "Europe",
   "city": "London",
   "country": "United Kingdom",
@@ -14,5 +11,7 @@
   "email": "adam.jackson@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/06/Adam-Jackson-UK-e1781282483355.png",
   "sourceUrl": "https://www.sedgwick.com/experts/adam-jackson/",
-  "imagePath": "images/profiles/adam-jackson.png"
+  "imagePath": "images/profiles/adam-jackson.png",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

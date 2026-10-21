@@ -2,10 +2,6 @@
   "id": "george-gao",
   "name": "George Gao",
   "role": "Senior Marine Surveyor",
-  "expertise": [
-    "Marine",
-    "Technical services"
-  ],
   "region": "Asia",
   "city": "Not published",
   "country": "China",
@@ -15,5 +11,7 @@
   "email": "george.gao@sedgwick.cn",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/George-Gao-China-e1769611600758.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/george-gao/",
-  "imagePath": "images/profiles/george-gao.jpg"
+  "imagePath": "images/profiles/george-gao.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

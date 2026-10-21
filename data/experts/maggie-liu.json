@@ -2,9 +2,6 @@
   "id": "maggie-liu",
   "name": "Maggie Liu",
   "role": "Marine Consultant / Claims Handler",
-  "expertise": [
-    "Claims"
-  ],
   "region": "Asia",
   "city": "Not published",
   "country": "Singapore",
@@ -14,5 +11,7 @@
   "email": "maggie.liu@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Maggie-Liu-Singapore.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/maggie-liu/",
-  "imagePath": "images/profiles/maggie-liu.jpg"
+  "imagePath": "images/profiles/maggie-liu.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

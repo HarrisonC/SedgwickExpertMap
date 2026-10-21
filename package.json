@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs profile-generator/tests/*.test.mjs",
     "validate:experts": "node scripts/validate-experts.mjs",
     "update:experts": "node scripts/update-experts.mjs",
     "download:photos": "node scripts/download-profile-images.mjs"
