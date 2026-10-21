@@ -2,9 +2,6 @@
   "id": "ali-saad",
   "name": "Ali Saad",
   "role": "Director – Marine Chemistry & Materials Science",
-  "expertise": [
-    "Chemist"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "United Kingdom",
@@ -14,5 +11,7 @@
   "email": "ali.saad@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/06/Ali-Saad-UK-e1781282081500.png",
   "sourceUrl": "https://www.sedgwick.com/experts/ali-saad/",
-  "imagePath": "images/profiles/ali-saad.png"
+  "imagePath": "images/profiles/ali-saad.png",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

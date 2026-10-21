@@ -45,6 +45,16 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: #b3393
 .suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
 .suggestions button { border: 1px solid #dde6e0; border-radius: 4px; background: #f7faf8; color: #3d634d; padding: 7px 9px; font-size: 10px; }
 .suggestions button:hover { border-color: #459070; background: #eaf6ef; }
+.selection-hint { margin: -2px 0 12px; }
+.claim-choices { border: 1px solid #ccd6cf; border-radius: 5px; overflow: hidden; }
+.claim-group + .claim-group { border-top: 1px solid #e4eae6; }
+.claim-group summary { cursor: pointer; padding: 12px; background: #f7faf8; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.choice-list { display: grid; gap: 4px; padding: 10px; }
+.choice { display: flex; align-items: flex-start; gap: 9px; font-size: 12px; font-weight: 400; line-height: 1.5; padding: 7px 3px; margin: 0; cursor: pointer; }
+.choice input { width: 17px; height: 17px; min-height: 0; padding: 0; flex-shrink: 0; margin: 1px 0 0; accent-color: #268060; }
+.vessel-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #ccd6cf; border-radius: 5px; }
+.claim-choices:focus, .vessel-choices:focus, summary:focus-visible { outline: 3px solid #26806060; outline-offset: 3px; }
+@media (max-width:480px) { .vessel-choices { grid-template-columns: 1fr; } }
 .map-hint { margin: 0 0 10px; }
 .location-picker { border: 1px solid #ccd6cf; border-radius: 6px; overflow: hidden; }
 .location-picker:focus { outline: 3px solid #26806060; outline-offset: 3px; }

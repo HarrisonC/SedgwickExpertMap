@@ -34,7 +34,18 @@
             <div class="field"><label for="name">Full name <span>*</span></label><input id="name" name="name" autocomplete="name" placeholder="e.g. Alex Morgan" required aria-describedby="name-error"><p class="field-error" id="name-error" hidden></p></div>
             <div class="field"><label for="id">Profile ID <span>*</span></label><input id="id" name="id" placeholder="e.g. alex-morgan" required spellcheck="false" autocapitalize="none" aria-describedby="id-hint id-error"><p class="hint" id="id-hint">Created from the name. You can edit it.</p><p class="field-error" id="id-error" hidden></p></div>
             <div class="field full"><label for="role">Job title <span>*</span></label><input id="role" name="role" placeholder="e.g. Marine cargo surveyor" required aria-describedby="role-error"><p class="field-error" id="role-error" hidden></p></div>
-            <div class="field full"><label for="expertise">Areas of expertise <span>*</span></label><textarea id="expertise" name="expertise" rows="3" placeholder="Cargo, Marine engineering" required aria-describedby="expertise-hint expertise-error"></textarea><p class="hint" id="expertise-hint">Separate each area with a comma or a new line.</p><p class="field-error" id="expertise-error" hidden></p><div class="suggestions" aria-label="Add an area of expertise"><button type="button" data-expertise="Marine">+ Marine</button><button type="button" data-expertise="Cargo">+ Cargo</button><button type="button" data-expertise="Electrical Engineering">+ Electrical Engineering</button><button type="button" data-expertise="Technical services">+ Technical services</button></div></div>
+            <div class="field full">
+              <p class="field-label" id="claimExpertise-label">Claim expertise</p>
+              <p class="hint selection-hint" id="claimExpertise-hint">Open a claim type and select every sub-category that applies. You can select across multiple claim types.</p>
+              <div id="claimExpertise" class="claim-choices" role="group" tabindex="-1" aria-labelledby="claimExpertise-label" aria-describedby="claimExpertise-hint claimExpertise-error"></div>
+              <p class="field-error" id="claimExpertise-error" hidden></p>
+            </div>
+            <div class="field full">
+              <p class="field-label" id="vesselTypes-label">Vessel types</p>
+              <p class="hint selection-hint" id="vesselTypes-hint">Select every vessel type this expert specialises in. These appear only on the profile card.</p>
+              <div id="vesselTypes" class="choice-list vessel-choices" role="group" tabindex="-1" aria-labelledby="vesselTypes-label" aria-describedby="vesselTypes-hint vesselTypes-error"></div>
+              <p class="field-error" id="vesselTypes-error" hidden></p>
+            </div>
           </div>
         </section>
         <section class="form-section" aria-labelledby="location-heading">
@@ -76,13 +87,14 @@
         <div class="profile-preview">
           <div class="preview-person"><div id="preview-initials" class="preview-initials" aria-hidden="true">—</div><div><h3 id="preview-name">Expert name</h3><p id="preview-role">Job title</p></div></div>
           <p class="preview-location" id="preview-location">City, Country</p>
-          <div class="preview-expertise" id="preview-expertise"><span>Areas of expertise</span></div>
+          <div class="preview-expertise" id="preview-expertise"><span>Claim expertise not yet assigned</span></div>
+          <p class="preview-location" id="preview-vessels">Vessel types: Not yet assigned</p>
           <div class="preview-contact" id="preview-contact" hidden></div>
         </div>
         <div class="json-heading"><h3>JSON output</h3><button class="text-button" id="copy-json" type="button" disabled>Copy JSON</button></div>
         <pre class="json-preview" tabindex="0" aria-label="Generated profile JSON"><code id="json-output"></code></pre>
         <div class="export-panel">
-          <div class="export-status"><span class="status-dot" id="status-dot" aria-hidden="true"></span><p id="completion-status" role="status">0 of 8 required fields complete</p></div>
+          <div class="export-status"><span class="status-dot" id="status-dot" aria-hidden="true"></span><p id="completion-status" role="status">0 of 7 required fields complete</p></div>
           <button type="submit" form="profile-form" class="download-button" id="download-json">Download JSON <span aria-hidden="true">↓</span></button>
           <p class="filename" id="filename">profile.json</p>
           <p class="action-status" id="action-status" role="status"></p>

@@ -1,9 +1,11 @@
-import { buildProfile, optionalFields, profileId, profileJSON, readProfileJSON, requiredFields } from './profile.js';
+import { buildProfile, optionalFields, profileId, profileJSON, readProfileJSON, requiredFields, selectionFields } from './profile.js';
+import { claimTypes, vesselTypes } from '../../js/claim-types.js';
 import { config } from '../config.js';
 import { createLocationMap } from './location-map.js';
 
 const form = document.querySelector('#profile-form');
-const fields = [...requiredFields, ...optionalFields];
+const fields = [...requiredFields, ...optionalFields, ...selectionFields];
+const control = field => selectionFields.includes(field) ? document.getElementById(field) : form.elements.namedItem(field);
 const touched = new Set();
 const summary = document.querySelector('#error-summary');
 const actionStatus = document.querySelector('#action-status');
@@ -13,7 +15,6 @@ let submitted = false;
 let current;
 let locationMap;
 let importedProfile = {};
-let importedExpertiseText;
 let importVersion = 0;
 const fileInput = document.querySelector('#profile-file');
 const importStatus = document.querySelector('#import-status');
@@ -23,13 +24,13 @@ const userRequiredFields = [...requiredFields.filter(field => !coordinateFields.
 const locationPicker = document.querySelector('#location-picker');
 
 function focusField(field) {
-  (coordinateFields.includes(field) ? locationPicker : form.elements.namedItem(field)).focus();
+  (coordinateFields.includes(field) ? locationPicker : control(field)).focus();
 }
 
 function displayErrors(errors) {
   for (const field of fields) {
     if (coordinateFields.includes(field)) continue;
-    const input = form.elements.namedItem(field);
+    const input = control(field);
     const message = document.getElementById(`${field}-error`);
     const error = (submitted || touched.has(field)) && errors[field];
     input.setAttribute('aria-invalid', String(Boolean(error)));
@@ -53,7 +54,8 @@ function displayErrors(errors) {
       const link = document.createElement('a');
       const isLocation = coordinateFields.includes(field);
       link.href = `#${isLocation ? 'location-picker' : field}`;
-      link.textContent = isLocation ? 'Map location: Select a location on the map.' : `${form.elements.namedItem(field).labels[0].textContent.replace('*', '').trim()}: ${error}`;
+      const label = isLocation ? '' : selectionFields.includes(field) ? document.getElementById(`${field}-label`).textContent : control(field).labels[0].textContent;
+      link.textContent = isLocation ? 'Map location: Select a location on the map.' : `${label.replace('*', '').trim()}: ${error}`;
       link.addEventListener('click', event => { event.preventDefault(); focusField(field); });
       item.append(link);
       list.append(item);
@@ -64,8 +66,8 @@ function displayErrors(errors) {
 
 function update() {
   const values = Object.fromEntries(new FormData(form));
-  // Preserve existing labels containing commas until the expertise field is edited.
-  if (values.expertise === importedExpertiseText) values.expertise = importedProfile.expertise;
+  values.claimExpertise = [...form.querySelectorAll('[name="claimExpertise"]:checked')].map(input => JSON.parse(input.value));
+  values.vesselTypes = [...form.querySelectorAll('[name="vesselTypes"]:checked')].map(input => input.value);
   current = buildProfile(values, importedProfile);
   const { profile, errors } = current;
   document.querySelector('#preview-name').textContent = profile.name || 'Expert name';
@@ -73,11 +75,12 @@ function update() {
   document.querySelector('#preview-initials').textContent = profile.name ? profile.name.split(/\s+/).map(part => Array.from(part)[0]).slice(0, 2).join('').toUpperCase() : '—';
   document.querySelector('#preview-location').textContent = [profile.city.toLowerCase() === 'not published' ? '' : profile.city, profile.country].filter(Boolean).join(', ') || 'City, Country';
   const expertise = document.querySelector('#preview-expertise');
-  expertise.replaceChildren(...(profile.expertise.length ? profile.expertise : ['Areas of expertise']).map(value => {
+  expertise.replaceChildren(...(profile.claimExpertise.length ? profile.claimExpertise.map(item => `${item.claimType}: ${item.subCategory}`) : ['Claim expertise not yet assigned']).map(value => {
     const tag = document.createElement('span');
     tag.textContent = value;
     return tag;
   }));
+  document.querySelector('#preview-vessels').textContent = `Vessel types: ${profile.vesselTypes.join(', ') || 'Not yet assigned'}`;
   const contact = document.querySelector('#preview-contact');
   contact.replaceChildren(...[profile.email, profile.phone].filter(Boolean).map(value => {
     const line = document.createElement('p');
@@ -105,13 +108,6 @@ form.addEventListener('focusout', event => {
   if (!fields.includes(event.target.name)) return;
   touched.add(event.target.name);
   update();
-});
-document.querySelectorAll('[data-expertise]').forEach(button => {
-  button.addEventListener('click', () => {
-    const input = form.elements.namedItem('expertise');
-    input.value = [...current.profile.expertise, button.dataset.expertise].join(', ');
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  });
 });
 
 form.addEventListener('submit', event => {
@@ -149,7 +145,7 @@ copyButton.addEventListener('click', async () => {
 function resetState() {
   form.reset();
   importedProfile = {};
-  importedExpertiseText = undefined;
+  document.querySelectorAll('.claim-group').forEach(group => {group.open = false;});
   importStatus.hidden = true;
   importStatus.textContent = '';
   importError.hidden = true;
@@ -181,8 +177,17 @@ fileInput.addEventListener('change', async () => {
     if (version !== importVersion) return;
     resetState();
     importedProfile = loaded.profile;
-    importedExpertiseText = loaded.values.expertise;
-    for (const [field, value] of Object.entries(loaded.values)) form.elements.namedItem(field).value = value;
+    for (const [field, value] of Object.entries(loaded.values)) {
+      if (selectionFields.includes(field)) {
+        for (const input of form.querySelectorAll(`[name="${field}"]`)) {
+          input.checked = field === 'claimExpertise' ? value.some(item => {
+            const option = JSON.parse(input.value);
+            return item.claimType === option.claimType && item.subCategory === option.subCategory;
+          }) : value.includes(input.value);
+          if (input.checked) input.closest('details')?.setAttribute('open', '');
+        }
+      } else form.elements.namedItem(field).value = value;
+    }
     customId = true;
     submitted = true;
     update();
@@ -196,6 +201,28 @@ fileInput.addEventListener('change', async () => {
     importError.hidden = false;
   } finally {
     if (version === importVersion) fileInput.value = '';
+  }
+});
+function checkbox(name, value, text) {
+  const label = document.createElement('label');
+  label.className = 'choice';
+  const input = document.createElement('input');
+  input.type = 'checkbox'; input.name = name; input.value = value;
+  label.append(input, document.createTextNode(text));
+  return label;
+}
+for (const [claimType, categories] of Object.entries(claimTypes)) {
+  const group = document.createElement('details'); group.className = 'claim-group';
+  const heading = document.createElement('summary'); heading.textContent = claimType;
+  const choices = document.createElement('div'); choices.className = 'choice-list';
+  for (const subCategory of categories) choices.append(checkbox('claimExpertise', JSON.stringify({claimType, subCategory}), subCategory));
+  group.append(heading, choices); document.querySelector('#claimExpertise').append(group);
+}
+for (const type of vesselTypes) document.querySelector('#vesselTypes').append(checkbox('vesselTypes', type, type));
+form.addEventListener('change', event => {
+  if (selectionFields.includes(event.target.name)) {
+    touched.add(event.target.name);
+    update();
   }
 });
 update();

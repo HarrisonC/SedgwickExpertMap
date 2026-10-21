@@ -2,9 +2,6 @@
   "id": "simon-burthem",
   "name": "Simon Burthem",
   "role": "Manging Director UK & EMEA",
-  "expertise": [
-    "Naval Architect"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "United Kingdom",
@@ -14,5 +11,7 @@
   "email": "simon.burthem@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/05/Simon-Burthem-UK-e1778169785757.png",
   "sourceUrl": "https://www.sedgwick.com/experts/simon-burthem/",
-  "imagePath": "images/profiles/simon-burthem.png"
+  "imagePath": "images/profiles/simon-burthem.png",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

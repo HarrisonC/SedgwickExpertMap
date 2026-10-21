@@ -44,7 +44,8 @@ const asset = path => {
 const files = JSON.parse(source('data/experts/index.json'));
 const profiles = Object.fromEntries(files.map(file => [file, JSON.parse(source(`data/experts/${file}`))]));
 const images = Object.fromEntries(Object.values(profiles).filter(p => p.imagePath).map(p => [p.imagePath, asset(p.imagePath)]));
-const helpers = plain(source('js/experts.js'));
+const taxonomy = plain(source('js/claim-types.js'));
+const helpers = `${taxonomy}\n${plain(source('js/experts.js').replace(/^import .*;\r?\n/gm, ''))}`;
 const validated = new Script(`${helpers}\nvalidateProfiles(${json(profiles)})`).runInNewContext();
 let cards = plain(source('js/profile-card.js'));
 const loader = plain(source('js/load-experts.js').replace(/^import .*;\r?\n/gm, ''));

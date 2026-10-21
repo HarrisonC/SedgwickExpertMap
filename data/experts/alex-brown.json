@@ -2,9 +2,6 @@
   "id": "alex-brown",
   "name": "Alex Brown",
   "role": "Senior Naval Architect",
-  "expertise": [
-    "Naval Architect"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "United Kingdom",
@@ -14,5 +11,7 @@
   "email": "alexander.brown@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/06/Alexander-Brown-UK-e1780328889447.png",
   "sourceUrl": "https://www.sedgwick.com/experts/alex-brown/",
-  "imagePath": "images/profiles/alex-brown.png"
+  "imagePath": "images/profiles/alex-brown.png",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

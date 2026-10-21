@@ -2,10 +2,6 @@
   "id": "nusret-nurcan",
   "name": "Nusret Nurcan",
   "role": "Marine Surveyor / Loss Adjuster, Marine Technical Services",
-  "expertise": [
-    "Marine",
-    "Technical services"
-  ],
   "region": "Middle East",
   "city": "Not published",
   "country": "United Arab Emirates",
@@ -15,5 +11,7 @@
   "email": "Nusret.Nurcan@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/Nusret-Nurcan-Dubai-e1769613312795.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/nusret-nurcan/",
-  "imagePath": "images/profiles/nusret-nurcan.jpg"
+  "imagePath": "images/profiles/nusret-nurcan.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

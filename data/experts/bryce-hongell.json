@@ -2,10 +2,6 @@
   "id": "bryce-hongell",
   "name": "Bryce Hongell",
   "role": "Senior Marine Surveyor",
-  "expertise": [
-    "Marine",
-    "Technical services"
-  ],
   "region": "North America",
   "city": "Not published",
   "country": "United States",
@@ -15,5 +11,7 @@
   "email": "bryce.hongell@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/02/Bryce-Hongell-USA.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/bryce-hongell/",
-  "imagePath": "images/profiles/bryce-hongell.jpg"
+  "imagePath": "images/profiles/bryce-hongell.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

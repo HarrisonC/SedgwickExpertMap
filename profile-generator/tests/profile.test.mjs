@@ -6,7 +6,7 @@ import { loadProfiles } from '../../scripts/validate-experts.mjs';
 
 const input = {
   id: 'alex-morgan', name: 'Alex Morgan', role: 'Marine cargo surveyor',
-  expertise: 'Cargo, Marine engineering', region: 'Europe', city: 'London',
+  claimExpertise: [{claimType: 'Cargo', subCategory: 'Dry Bulk'}], vesselTypes: ['Dry Bulk'], region: 'Europe', city: 'London',
   country: 'United Kingdom', latitude: '51.5074', longitude: '-0.1278',
 };
 
@@ -17,7 +17,8 @@ test('generator produces a downloadable profile accepted by the map', () => {
   assert.equal(profile.email, 'alex@example.com');
   assert.equal(profile.latitude, 51.5074);
   assert.equal(profile.longitude, -0.1278);
-  assert.deepEqual(profile.expertise, ['Cargo', 'Marine engineering']);
+  assert.deepEqual(profile.claimExpertise, input.claimExpertise);
+  assert.deepEqual(profile.vesselTypes, input.vesselTypes);
   const downloaded = JSON.parse(profileJSON(profile));
   assert.deepEqual(validateProfiles({ 'alex-morgan.json': downloaded }), [profile]);
   assert.ok(profileJSON(profile).endsWith('\n'));
@@ -39,9 +40,19 @@ test('invalid numbers and out-of-range coordinates are rejected, boundaries are 
   assert.deepEqual(buildProfile({ ...input, latitude: '-90', longitude: '180' }).errors, {});
 });
 
-test('expertise handles new lines, repeated labels and empty separators', () => {
-  assert.deepEqual(buildProfile({ ...input, expertise: ' Cargo, cargo\n Marine engineering, ,Cargo\n' }).profile.expertise, ['Cargo', 'Marine engineering']);
-  assert.ok(buildProfile({ ...input, expertise: ',\n, ' }).errors.expertise);
+test('claim and vessel selections round trip and reject invalid catalogue entries', () => {
+  const values = {...input, claimExpertise: [
+    {claimType: 'Admiralty', subCategory: 'Towage'},
+    {claimType: 'Emergency Response & Salvage', subCategory: 'Towage'},
+    {claimType: 'Machinery & Technical Failure', subCategory: 'Electrical, Power & Control (inc. DP)'},
+  ], vesselTypes: ['Cruise', 'Container', 'Cable Layer']};
+  const {profile, errors} = buildProfile(values);
+  assert.deepEqual(errors, {});
+  const loaded = readProfileJSON(profileJSON(profile));
+  assert.deepEqual(buildProfile(loaded.values, loaded.profile).profile, profile);
+  assert.ok(buildProfile({...input, claimExpertise: [{claimType: 'Cargo', subCategory: 'Towage'}]}).errors.claimExpertise);
+  assert.ok(buildProfile({...input, vesselTypes: ['Unknown ship']}).errors.vesselTypes);
+  assert.deepEqual(buildProfile({...input, claimExpertise: [], vesselTypes: []}).errors, {});
 });
 
 test('profile IDs are suggested from names and checked for safe export filenames', () => {
@@ -70,22 +81,22 @@ test('URLs require HTTP(S) and local portraits must match the profile ID', () =>
 test('existing profiles round trip through the editor without losing details', () => {
   for (const original of loadProfiles('data/experts')) {
     const { profile, values } = readProfileJSON(profileJSON(original));
-    const result = buildProfile({ ...values, expertise: profile.expertise }, profile);
+    const result = buildProfile(values, profile);
     assert.deepEqual(result.errors, {});
     assert.deepEqual(result.profile, original);
   }
 });
 
-test('imported profiles retain extra fields, exact coordinates and comma-containing expertise', () => {
+test('imported profiles retain extra fields, exact coordinates and comma-containing claim labels', () => {
   const original = {
     ...buildProfile(input).profile,
     latitude: 51.50740012345, longitude: -0.12780098765,
-    expertise: ['Cargo, including refrigerated goods', 'Marine engineering'],
+    claimExpertise: [{claimType: 'Machinery & Technical Failure', subCategory: 'Electrical, Power & Control (inc. DP)'}],
     qualifications: ['Master mariner'], metadata: { verified: true },
     email: 'alex@example.com', phone: '+44 20 1234 5678',
   };
   const { profile, values } = readProfileJSON(`\uFEFF${profileJSON(original)}`);
-  const updated = buildProfile({ ...values, expertise: profile.expertise, name: 'Alex Updated', email: '', phone: '' }, profile);
+  const updated = buildProfile({ ...values, name: 'Alex Updated', email: '', phone: '' }, profile);
   assert.deepEqual(updated.errors, {});
   const expected = { ...original, name: 'Alex Updated' };
   delete expected.email;
@@ -97,7 +108,19 @@ test('imported profiles retain extra fields, exact coordinates and comma-contain
 test('invalid JSON and non-profile files are rejected before editing', () => {
   for (const source of ['{broken', '', 'null', '[]', '["alex.json"]', '"profile"', '{}']) assert.throws(() => readProfileJSON(source));
   const original = buildProfile(input).profile;
-  assert.throws(() => readProfileJSON(JSON.stringify({ ...original, expertise: 'Marine' })), /expertise/);
+  assert.throws(() => readProfileJSON(JSON.stringify({ ...original, claimExpertise: 'Marine' })), /claimExpertise/);
   assert.throws(() => readProfileJSON(JSON.stringify({ ...original, latitude: '51.5' })), /latitude/);
   assert.throws(() => readProfileJSON(JSON.stringify({ ...original, longitude: 181 })), /longitude/);
+});
+
+test('older profiles lose former expertise labels and begin with unassigned claim and vessel fields', () => {
+  const original = {...buildProfile(input).profile, expertise: ['Cargo', 'Marine engineering']};
+  delete original.claimExpertise;
+  delete original.vesselTypes;
+  const loaded = readProfileJSON(profileJSON(original));
+  const {profile, errors} = buildProfile(loaded.values, loaded.profile);
+  assert.deepEqual(errors, {});
+  assert.deepEqual(profile.claimExpertise, []);
+  assert.deepEqual(profile.vesselTypes, []);
+  assert.equal(Object.hasOwn(profile, 'expertise'), false);
 });

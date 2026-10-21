@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateProfiles, filterExperts, inBounds, fitExtent } from '../js/experts.js';
 import { loadProfiles } from '../scripts/validate-experts.mjs';
-const expert = { id: 'alex', name: 'Alex', role: 'Surveyor', expertise: ['Cargo'], region: 'Europe', city: 'London', country: 'UK', latitude: 51.5, longitude: -.12 };
+const expert = { id: 'alex', name: 'Alex', role: 'Surveyor', claimExpertise: [{claimType: 'Cargo', subCategory: 'Dry Bulk'}], vesselTypes: ['Dry Bulk'], region: 'Europe', city: 'London', country: 'UK', latitude: 51.5, longitude: -.12 };
 test('profiles added as files are discovered, sorted, and removed without a registry', () => {
   const dir = mkdtempSync(join(tmpdir(), 'marine-experts-'));
   try {
@@ -19,16 +19,16 @@ test('profiles added as files are discovered, sorted, and removed without a regi
   } finally { rmSync(dir, {recursive: true}); }
 });
 test('invalid profiles identify the file and field', () => {
-  for (const [field, value] of [['name', ''], ['latitude', 91], ['longitude', -181], ['expertise', []], ['email', 'wrong'], ['phone', 'javascript:alert(1)']]) {
+  for (const [field, value] of [['name', ''], ['latitude', 91], ['longitude', -181], ['claimExpertise', [{claimType: 'Cargo', subCategory: 'Unknown'}]], ['email', 'wrong'], ['phone', 'javascript:alert(1)']]) {
     assert.throws(() => validateProfiles({'bad.json': {...expert, [field]: value}}), new RegExp(`bad.json: ${field}`));
   }
   assert.throws(() => validateProfiles({'one.json': expert, 'two.json': expert}), /two.json: duplicate id/);
 });
 test('filters combine and permit empty results', () => {
-  const other = {...expert, id: 'b', region: 'Asia', expertise: ['Engineering']};
+  const other = {...expert, id: 'b', region: 'Asia', claimExpertise: [{claimType: 'Admiralty', subCategory: 'Towage'}]};
   assert.equal(filterExperts([expert, other], 'all', 'all').length, 2);
-  assert.deepEqual(filterExperts([expert, other], 'Cargo', 'Europe'), [expert]);
-  assert.equal(filterExperts([expert, other], 'Cargo', 'Asia').length, 0);
+  assert.deepEqual(filterExperts([expert, other], 'Cargo', 'Dry Bulk', 'Europe'), [expert]);
+  assert.equal(filterExperts([expert, other], 'Cargo', 'all', 'Asia').length, 0);
 });
 test('viewport includes each colocated expert independently', () => {
   const bounds = {west: -1, east: 1, south: 50, north: 52};

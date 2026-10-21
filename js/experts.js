@@ -1,3 +1,22 @@
+import { claimTypes, vesselTypes } from './claim-types.js';
+
+export function validateClaimExpertise(value) {
+  if (!Array.isArray(value)) return false;
+  const seen = new Set();
+  return value.every(item => {
+    if (!item || typeof item !== 'object' || !Object.hasOwn(claimTypes, item.claimType) ||
+      !claimTypes[item.claimType].includes(item.subCategory)) return false;
+    const key = JSON.stringify([item.claimType, item.subCategory]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export function validateVesselTypes(value) {
+  return Array.isArray(value) && value.every(item => vesselTypes.includes(item)) && new Set(value).size === value.length;
+}
+
 export function validateProfiles(entries) {
   const ids = new Set();
   return Object.entries(entries).map(([file, value]) => {
@@ -10,7 +29,10 @@ export function validateProfiles(entries) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.id)) fail("id must be a lowercase hyphenated identifier");
     if (ids.has(p.id)) fail(`duplicate id: ${p.id}`);
     ids.add(p.id);
-    if (!Array.isArray(p.expertise) || !p.expertise.length || p.expertise.some(x => typeof x !== "string" || !x.trim())) fail("expertise must be a nonempty array of strings");
+    // Older profiles can still load, but their former expertise labels do not
+    // imply any of the new claim or vessel assignments.
+    if (p.claimExpertise !== undefined && !validateClaimExpertise(p.claimExpertise)) fail('claimExpertise must contain unique claim type / sub-category pairs from the catalogue');
+    if (p.vesselTypes !== undefined && !validateVesselTypes(p.vesselTypes)) fail('vesselTypes must contain unique vessel types from the catalogue');
     for (const [key, limit] of [["latitude", 90], ["longitude", 180]]) {
       if (typeof p[key] !== "number" || !Number.isFinite(p[key]) || Math.abs(p[key]) > limit) fail(`${key} must be a number between -${limit} and ${limit}`);
     }
@@ -20,8 +42,10 @@ export function validateProfiles(entries) {
     return p;
   }).sort((a, b) => a.name.localeCompare(b.name, "en"));
 }
-export function filterExperts(experts, expertise, region) {
-  return experts.filter(p => (expertise === "all" || p.expertise.includes(expertise)) && (region === "all" || p.region === region));
+export function filterExperts(experts, claimType = 'all', subCategory = 'all', region = 'all') {
+  return experts.filter(p => (claimType === 'all' || (p.claimExpertise ?? []).some(item =>
+    item.claimType === claimType && (subCategory === 'all' || item.subCategory === subCategory))) &&
+    (region === 'all' || p.region === region));
 }
 export function inBounds(expert, bounds) {
   if (expert.latitude < bounds.south || expert.latitude > bounds.north) return false;

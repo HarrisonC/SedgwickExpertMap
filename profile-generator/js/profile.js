@@ -1,7 +1,8 @@
-import { validateProfiles } from '../../js/experts.js';
+import { validateProfiles, validateClaimExpertise, validateVesselTypes } from '../../js/experts.js';
 
-export const requiredFields = ['name', 'id', 'role', 'expertise', 'region', 'city', 'country', 'latitude', 'longitude'];
+export const requiredFields = ['name', 'id', 'role', 'region', 'city', 'country', 'latitude', 'longitude'];
 export const optionalFields = ['email', 'phone', 'imageUrl', 'imagePath', 'sourceUrl'];
+export const selectionFields = ['claimExpertise', 'vesselTypes'];
 
 export function profileId(name) {
   return name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
@@ -14,14 +15,11 @@ export function buildProfile(values, existingProfile = {}) {
   const text = field => String(values[field] ?? '').trim();
   const profile = { ...existingProfile };
   for (const field of ['id', 'name', 'role']) profile[field] = text(field);
-  const seen = new Set();
-  const expertise = Array.isArray(values.expertise) ? values.expertise : text('expertise').split(/[,\n]/);
-  profile.expertise = expertise.map(item => item.trim()).filter(item => {
-    const key = item.toLowerCase();
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  delete profile.expertise;
+  profile.claimExpertise = values.claimExpertise ?? [];
+  profile.vesselTypes = values.vesselTypes ?? [];
+  if (!validateClaimExpertise(profile.claimExpertise)) errors.claimExpertise = 'Choose valid claim sub-categories from the list.';
+  if (!validateVesselTypes(profile.vesselTypes)) errors.vesselTypes = 'Choose valid vessel types from the list.';
   for (const field of ['region', 'city', 'country']) profile[field] = text(field);
   for (const field of ['latitude', 'longitude']) {
     const value = text(field);
@@ -34,11 +32,10 @@ export function buildProfile(values, existingProfile = {}) {
   }
 
   for (const field of requiredFields) {
-    if (!text(field)) errors[field] = field === 'expertise' ? 'Enter at least one area of expertise.' : 'This field is required.';
+    if (!text(field)) errors[field] = 'This field is required.';
   }
   if (profile.id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(profile.id)) errors.id = 'Use lowercase letters, numbers and single hyphens.';
   if (profile.id === 'index') errors.id = 'Choose another ID; index.json is reserved for the profile list.';
-  if (text('expertise') && !profile.expertise.length) errors.expertise = 'Enter at least one area of expertise.';
   for (const [field, limit] of [['latitude', 90], ['longitude', 180]]) {
     if (text(field) && (profile[field] === null || Math.abs(profile[field]) > limit)) errors[field] = `Enter a number between −${limit} and ${limit}.`;
   }
@@ -70,7 +67,8 @@ export function readProfileJSON(source) {
   // Validate before changing the form, so rejected files cannot erase edits.
   validateProfiles({ 'Profile': profile });
   const values = Object.fromEntries([...requiredFields, ...optionalFields].map(field => [
-    field, field === 'expertise' ? profile.expertise.join('\n') : String(profile[field] ?? ''),
+    field, String(profile[field] ?? ''),
   ]));
+  for (const field of selectionFields) values[field] = profile[field] ?? [];
   return { profile, values };
 }

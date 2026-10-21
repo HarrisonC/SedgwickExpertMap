@@ -2,10 +2,6 @@
   "id": "maira-kontolaimou",
   "name": "Maira Kontolaimou",
   "role": "Yacht Adjuster",
-  "expertise": [
-    "Marine",
-    "Yachts"
-  ],
   "region": "Europe",
   "city": "Not published",
   "country": "Greece",
@@ -15,5 +11,7 @@
   "email": "Maira.Kontolaimou@sedgwick.com",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/03/Maira-Kontolaimou-Greece-e1773668936646.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/maira-kontolaimou/",
-  "imagePath": "images/profiles/maira-kontolaimou.jpg"
+  "imagePath": "images/profiles/maira-kontolaimou.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }

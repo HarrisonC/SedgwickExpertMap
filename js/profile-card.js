@@ -31,7 +31,10 @@ export function createProfileCard(profile) {
   const details = node('dl', 'map-profile-details');
   const location = profile.city.trim().toLowerCase() === 'not published' ? profile.country : `${profile.city}, ${profile.country}`;
   for (const [label, value, href] of [
-    ['Expertise', profile.expertise.join(', ')],
+    ...Object.entries(Object.groupBy(profile.claimExpertise ?? [], item => item.claimType))
+      .map(([type, items]) => [type, items.map(item => item.subCategory).join(', ')]),
+    ['Claim expertise', !profile.claimExpertise?.length && 'Not yet assigned'],
+    ['Vessel types', profile.vesselTypes?.length ? profile.vesselTypes.join(', ') : 'Not yet assigned'],
     ['Location', location],
     ['Email', profile.email, `mailto:${profile.email}`],
     ['Phone', profile.phone, `tel:${profile.phone?.replace(/[^+\d]/g, '')}`],

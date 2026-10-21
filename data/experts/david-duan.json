@@ -2,10 +2,6 @@
   "id": "david-duan",
   "name": "David Duan",
   "role": "Marine Surveyor / Naval Architect",
-  "expertise": [
-    "Marine",
-    "Technical services"
-  ],
   "region": "Asia",
   "city": "Not published",
   "country": "China",
@@ -15,5 +11,7 @@
   "email": "david.duan@sedgwick.cn",
   "imageUrl": "https://www.sedgwick.com/wp-content/uploads/2026/01/David-Duan-China-e1769611323690.jpg",
   "sourceUrl": "https://www.sedgwick.com/experts/david-duan/",
-  "imagePath": "images/profiles/david-duan.jpg"
+  "imagePath": "images/profiles/david-duan.jpg",
+  "claimExpertise": [],
+  "vesselTypes": []
 }
